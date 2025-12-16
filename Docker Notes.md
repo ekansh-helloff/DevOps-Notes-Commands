@@ -79,7 +79,7 @@ Volumes:::
 
 
 
-1\. Named Volumes
+**1\. Named Volumes**
 
 
 
@@ -127,7 +127,7 @@ Docker stores it under /var/lib/docker/volumes/db\_data/\_data.
 
 
 
-2\. Bind Mounts
+**2\. Bind Mounts**
 
 
 
@@ -241,7 +241,7 @@ We then pushed the image to Azure Container Registry and deployed it to Kubernet
 
 
 
-Docker life cycle:
+Docker life cycle: 
 
 
 
@@ -316,5 +316,6 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
