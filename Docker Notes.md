@@ -32,32 +32,30 @@ Docker --> Docker Engine -> Containers
 
 >>>  **Files and Folders that containers use from host operating system**
 
-&nbsp;   The host's file system: Docker containers can access the host file system using bind mounts, which allow the container to read and write files in the host file system.
-&nbsp;   Networking stack: The host's networking stack is used to provide network connectivity to the container. Docker containers can be connected to the host's network directly or through a virtual network.
-&nbsp;   System calls: The host's kernel handles system calls from the container, which is how the container accesses the host's resources, such as CPU, memory, and I/O.
-&nbsp;   Namespaces: Docker containers use Linux namespaces to create isolated environments for the container's processes. Namespaces provide isolation for resources such as the file system, process ID, and network.
-&nbsp;   Control groups (cgroups): Docker containers use cgroups to limit and control the amount of resources, such as CPU, memory, and I/O, that a container can access.
+The host's file system: Docker containers can access the host file system using bind mounts, which allow the container to read and write files in the host file system.
+Networking stack: The host's networking stack is used to provide network connectivity to the container. Docker containers can be connected to the host's network directly or through a virtual network.
+System calls: The host's kernel handles system calls from the container, which is how the container accesses the host's resources, such as CPU, memory, and I/O.
+Namespaces: Docker containers use Linux namespaces to create isolated environments for the container's processes. Namespaces provide isolation for resources such as the file system, process ID, and network.
+Control groups (cgroups): Docker containers use cgroups to limit and control the amount of resources, such as CPU, memory, and I/O, that a container can access.
 
 ----------------------------------------------------------------------------------
 
-
-
-Docker daemon
+**Docker daemon**
 
 The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
 
 
-Docker client
+**Docker client**
 
 The Docker client (docker) is the primary way that many Docker users interact with Docker. When you use commands such as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API. The Docker client can communicate with more than one daemon.
 
 
-Docker Desktop
+**Docker Desktop**
 
 Docker Desktop is an easy-to-install application for your Mac, Windows or Linux environment that enables you to build and share containerized applications and microservices. Docker Desktop includes the Docker daemon (dockerd), the Docker client (docker), Docker Compose, Docker Content Trust, Kubernetes, and Credential Helper. For more information, see Docker Desktop.
 
 
-Docker registries
+**Docker registries**
 
 A Docker registry stores Docker images. Docker Hub is a public registry that anyone can use, and Docker is configured to look for images on Docker Hub by default. You can even run your own private registry.
 
@@ -239,13 +237,10 @@ After that the application behaved identically across all environments.
 
 We then pushed the image to Azure Container Registry and deployed it to Kubernetes (AKS).
 
+**Docker life cycle: **  
 
-
-Docker life cycle: 
-
-
-
-
+The Docker life cycle describes the complete journey of a containerized application — from building an image, running it as a container, managing its state, and finally stopping or removing it.
+At Docker level, the container lifecycle is usually described with five main states: created, running, paused, stopped/exited, and removed/deleted. These states are driven by common Docker CLI. It starts with building an immutable image, pushing it to a registry, running it as a container, managing its runtime state, and finally stopping and removing it. In enterprise DevOps, this lifecycle is automated through CI/CD pipelines and orchestration tools like Kubernetes to ensure scalability, reliability, and consistency.
 
 Docker components:
 
@@ -259,16 +254,74 @@ Docker COPY vs Docker ADD:
 
 CMD vs Entry point:  
 
+ENTRYPOINT defines the main executable of the container and is not overridden by default, while CMD provides default arguments or commands that can be overridden at runtime. In production, we typically combine ENTRYPOINT with CMD to create flexible yet controlled container behaviour.
 
+FROM ubuntu
+CMD ["echo", "Hello World"]
+docker run myimage
+--> Hello World
+docker run myimage echo "Hi"
+--> Hi
+**CMD is easily overridden at runtime.**
 
+FROM ubuntu
+ENTRYPOINT ["echo"]
+docker run myimage Hello
+--> Hello
+**ENTRYPOINT always runs and treats runtime input as arguments.**
 
+FROM ubuntu
+ENTRYPOINT ["echo"]
+CMD ["Hello World"]
+Behaviors:
+
+docker run myimage
+# Output: Hello World
+
+docker run myimage DevOps
+# Output: DevOps
+
+**Prod Example:**
+FROM python:3.11
+WORKDIR /app
+COPY app.py .
+ENTRYPOINT ["python", "app.py"]
+CMD ["--env=prod"]
+
+docker run myapp
+docker run myapp --env=dev
+**ENTRYPOINT defines the application, CMD provides environment-specific defaults**
+
+What is --entrypoint flag in Docker?
+
+--entrypoint is used to override the ENTRYPOINT defined in a Dockerfile at runtime.
+
+ENTRYPOINT cannot be overridden 
+CMD can be overridden & But sometimes (debugging, troubleshooting), we must bypass ENTRYPOINT.
+
+docker run --entrypoint /bin/bash myimage
 
 docker network \& types:
+Now container starts with
+bash shell
 
+📌 Real-world use
 
+Debug container
+Inspect filesystem
+Run emergency commands
 
+##Kubernetes sends SIGTERM to containers during:
+
+Pod termination
+Rolling updates
+
+📌 If shell form is used:
+App may not stop properly
+Leads to crash loops
+
+📌 Exec form handles this cleanly.
 Explain how to isolate networks b/w containers:
-
 
 
 Distroless images in container:
@@ -316,6 +369,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
