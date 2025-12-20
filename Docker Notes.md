@@ -59,7 +59,6 @@ Docker Desktop is an easy-to-install application for your Mac, Windows or Linux 
 
 A Docker registry stores Docker images. Docker Hub is a public registry that anyone can use, and Docker is configured to look for images on Docker Hub by default. You can even run your own private registry.
 
-
 When you use the docker pull or docker run commands, the required images are pulled from your configured registry. When you use the docker push command, your image is pushed to your configured registry. Docker objects
 
 When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. This section is a brief overview of some of those objects.
@@ -71,11 +70,7 @@ Dockerfile is a file where you provide the steps to build your Docker Image...
 
 \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
-
-
 Volumes:::
-
-
 
 **1\. Named Volumes**
 
@@ -211,7 +206,7 @@ volumes:
 
 
 
-Docker:
+**Docker:**
 
 Docker is an open-source containerization platform that helps package an application with all its dependencies into a single, lightweight container.
 
@@ -240,7 +235,7 @@ We then pushed the image to Azure Container Registry and deployed it to Kubernet
 The Docker life cycle describes the complete journey of a containerized application — from building an image, running it as a container, managing its state, and finally stopping or removing it.
 At Docker level, the container lifecycle is usually described with five main states: created, running, paused, stopped/exited, and removed/deleted. These states are driven by common Docker CLI. It starts with building an immutable image, pushing it to a registry, running it as a container, managing its runtime state, and finally stopping and removing it. In enterprise DevOps, this lifecycle is automated through CI/CD pipelines and orchestration tools like Kubernetes to ensure scalability, reliability, and consistency.
 
-Docker components:
+**Docker components:**
 
 Docker uses a client-server architecture. The Docker client communicates with the Docker daemon, which manages images, containers, networks, and volumes. Images are immutable templates built using Dockerfiles, and containers are runtime instances of those images. Docker registries store and distribute images. Under the hood, Docker uses Linux namespaces and cgroups to provide isolation and resource control.
 
@@ -273,6 +268,8 @@ Manages Docker networks & volumes
 Communicates with containerd and runc
 Talks to registries (pull/push images)
 
+**Docker Engine is the product, while Docker Daemon is one of its core components. When we install Docker, we install the Docker Engine, which internally runs the Docker Daemon to manage containers using containerd and runc.**
+
 **Docker COPY vs Docker ADD:**
 
 
@@ -300,10 +297,10 @@ CMD ["Hello World"]
 Behaviors:
 
 docker run myimage
-# Output: Hello World
+**Output: Hello World**
 
 docker run myimage DevOps
-# Output: DevOps
+**Output: DevOps**
 
 **Prod Example:**
 FROM python:3.11
@@ -395,6 +392,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
