@@ -213,8 +213,6 @@ volumes:
 
 Docker:
 
-
-
 Docker is an open-source containerization platform that helps package an application with all its dependencies into a single, lightweight container.
 
 Containers share the host OS kernel, making them much faster and more efficient than virtual machines.
@@ -237,22 +235,48 @@ After that the application behaved identically across all environments.
 
 We then pushed the image to Azure Container Registry and deployed it to Kubernetes (AKS).
 
-**Docker life cycle: **  
+**Docker life cycle:**  
 
 The Docker life cycle describes the complete journey of a containerized application — from building an image, running it as a container, managing its state, and finally stopping or removing it.
 At Docker level, the container lifecycle is usually described with five main states: created, running, paused, stopped/exited, and removed/deleted. These states are driven by common Docker CLI. It starts with building an immutable image, pushing it to a registry, running it as a container, managing its runtime state, and finally stopping and removing it. In enterprise DevOps, this lifecycle is automated through CI/CD pipelines and orchestration tools like Kubernetes to ensure scalability, reliability, and consistency.
 
 Docker components:
 
+Docker uses a client-server architecture. The Docker client communicates with the Docker daemon, which manages images, containers, networks, and volumes. Images are immutable templates built using Dockerfiles, and containers are runtime instances of those images. Docker registries store and distribute images. Under the hood, Docker uses Linux namespaces and cgroups to provide isolation and resource control.
+
+The Docker client communicates with the Docker daemon using REST APIs over Unix socket or TCP
+The Docker daemon is responsible for managing the complete container lifecycle.
+Docker images are layered, immutable artifacts that define how a container should be created.
+Containers are isolated processes running on the host OS kernel, making them faster and more lightweight than virtual machines.
+Registries enable versioned image storage and secure distribution across environments.
+Dockerfile allows us to create reproducible and version-controlled container images.
+Docker networking enables container-to-container and container-to-external communication using virtual networks.
+Docker volumes decouple container lifecycle from data lifecycle.
+**Docker Engine** is the complete end-to-end platform that enables container creation, execution, and management.
+
+Components of Docker Engine:  Docker Client (docker)/Docker Daemon (dockerd)/REST API
+
+Responsibilities:
+
+Accepts Docker commands
+Manages container lifecycle
+Builds and runs images
+Handles networking and volumes
+
+**Docker Daemon (dockerd):**   Docker Daemon is the backend service that performs all container operations requested by the Docker client.
+
+Responsibilities:
+
+Builds Docker images
+Runs and stops containers
+Manages Docker networks & volumes
+Communicates with containerd and runc
+Talks to registries (pull/push images)
+
+**Docker COPY vs Docker ADD:**
 
 
-Docker COPY vs Docker ADD:
-
-
-
-
-
-CMD vs Entry point:  
+**CMD vs Entry point: ** 
 
 ENTRYPOINT defines the main executable of the container and is not overridden by default, while CMD provides default arguments or commands that can be overridden at runtime. In production, we typically combine ENTRYPOINT with CMD to create flexible yet controlled container behaviour.
 
@@ -321,7 +345,9 @@ App may not stop properly
 Leads to crash loops
 
 📌 Exec form handles this cleanly.
+
 Explain how to isolate networks b/w containers:
+
 
 
 Distroless images in container:
@@ -369,6 +395,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
