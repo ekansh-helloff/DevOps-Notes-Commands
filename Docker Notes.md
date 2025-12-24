@@ -1,3 +1,40 @@
+_**Why to learn Docker?**_
+
+A couple of years back, when organizations needed other applications, they buy a server without knowing the performance requirement of the software/application. This results waste of money and resources. Then Virtual machines come onto the market, which allows engineers to run multiple applications on the same resource but as a completely different server. But Every application to run on a Virtual machine requires OS and every OS needs its own CPU, RAM, etc. to run. Which increases the cost.
+Then Docker Model comes into the scope, which overcomes the drawbacks of the Virtual Machine. It reduces the wastage of resources by sharing OS, memory, and CPU, and It offers many benefits for developers and system administrators, like consistency, portability, efficiency, security, scalability, and version control. These benefits make it easier to manage and deploy applications
+
+
+_**Features of Docker**_
+•	Docker reduces the size of development by providing a smaller part of the OS via containers.
+•	It is easier to work on the same project by different teams with the help of Containers.
+•	Docker containers can be deployed anywhere, on any physical, or virtual machines and on the cloud.
+•	Docker containers are lightweight so, it becomes east to scale them.
+
+
+**_Advantages of Docker_******
+•	Docker uses less memory.
+•	The full operating system is not required to run an application.
+•	Containers run faster than the other Virtual Machines.
+•	It is lightweight.
+•	It allows us to use a remote repository to share your containers with other teams.
+•	To reduce the risks, it uses dependencies.
+
+
+Disadvantages of Docker
+•	Complexity will increase due to layering.
+•	It is difficult to manage a large number of containers.
+•	For an application that needs better graphics, Docker is not suitable for it.
+•	Cross-platform compatibility is not allowed.
+
+_Difference Between Docker Containers and Virtual Machines_
+
+Docker Containers	Virtual Machines
+Docker Containers contain binaries, libraries, and configuration files along with the application itself.	Virtual Machines (VMs) run on Hypervisors, which allow multiple Virtual Machines to run on a single machine along with its own operating system.
+They don’t contain a guest OS for each container and rely on the underlying OS kernel, which makes the containers lightweight.	Each VM has its own copy of an operating system along with the application and necessary binaries, which makes it significantly larger and it requires more resources.
+Containers share resources with other containers in the same host OS and provide OS-level process isolation.	They provide Hardware-level process isolation and are slow to boot.
+
+
+
 Docker --> Docker Engine -> Containers 
 
 
@@ -392,6 +429,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
