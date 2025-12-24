@@ -310,6 +310,7 @@ Talks to registries (pull/push images)
 **Docker COPY vs Docker ADD:**
 
 
+
 **CMD vs Entry point: ** 
 
 ENTRYPOINT defines the main executable of the container and is not overridden by default, while CMD provides default arguments or commands that can be overridden at runtime. In production, we typically combine ENTRYPOINT with CMD to create flexible yet controlled container behaviour.
@@ -318,8 +319,10 @@ FROM ubuntu
 CMD ["echo", "Hello World"]
 docker run myimage
 --> Hello World
+
 docker run myimage echo "Hi"
 --> Hi
+
 **CMD is easily overridden at runtime.**
 
 FROM ubuntu
@@ -382,7 +385,9 @@ Leads to crash loops
 
 Explain how to isolate networks b/w containers:
 
-
+Container network isolation ensures that a single compromised service cannot turn into a full system breach by eliminating unintended communication paths.
+Network isolation between containers means ensuring that only explicitly allowed services can communicate, while everything else is blocked by default.
+The goal is to prevent lateral movement, reduce blast radius, and enforce least-privilege networking.
 
 Distroless images in container:
 
@@ -398,13 +403,9 @@ Mutli-stage build in docker:
 
 Real time challenges:
 
-
-
-Docker is a single daemon process. Which can cause a single point of failure, If the Docker Daemon goes down for some reason all the applications are down.
-
-Docker Daemon runs as a root user. Which is a security threat. Any process running as a root can have adverse effects. When it is comprised for security reasons, it can impact other applications or containers on the host.
-
-Resource Constraints: If you're running too many containers on a single host, you may experience issues with resource constraints. This can result in slow performance or crashes.
+#Docker is a single daemon process. Which can cause a single point of failure, If the Docker Daemon goes down for some reason all the applications are down.
+#Docker Daemon runs as a root user. Which is a security threat. Any process running as a root can have adverse effects. When it is comprised for security reasons, it can impact other applications or containers on the host.
+#Resource Constraints: If you're running too many containers on a single host, you may experience issues with resource constraints. This can result in slow performance or crashes.
 
 
 
@@ -429,6 +430,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
