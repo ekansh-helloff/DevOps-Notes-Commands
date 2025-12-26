@@ -307,6 +307,11 @@ Talks to registries (pull/push images)
 
 **Docker Engine is the product, while Docker Daemon is one of its core components. When we install Docker, we install the Docker Engine, which internally runs the Docker Daemon to manage containers using containerd and runc.**
 
+<img width="1000" height="382" alt="image" src="https://github.com/user-attachments/assets/02e83184-5891-4ab9-a952-879ed78b6baa" />
+<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/c45e0b0f-4e86-411d-b790-2a3d09241fbe" />
+
+
+
 **Docker COPY vs Docker ADD:**
 
 
@@ -430,6 +435,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
