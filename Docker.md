@@ -41,17 +41,11 @@ Docker --> Docker Engine -> Containers
 
 **Containers** and virtual machines are both technologies used to isolate applications and their dependencies, but they have some key differences:
 
-
-
 1\. Resource Utilization: Containers share the host operating system kernel, making them lighter and faster than VMs. VMs have a full-fledged OS and hypervisor, making them more resource-intensive.
 
 2\. Portability: Containers are designed to be portable and can run on any system with a compatible host operating system. VMs are less portable as they need a compatible hypervisor to run.
 
 3\. Security: VMs provide a higher level of security as each VM has its own operating system and can be isolated from the host and other VMs. Containers provide less isolation, as they share the host operating system.
-
-
-
-
 
 **Management**: Managing containers is typically easier than managing VMs, as containers are designed to be lightweight and fast-moving.
 
@@ -394,6 +388,17 @@ Container network isolation ensures that a single compromised service cannot tur
 Network isolation between containers means ensuring that only explicitly allowed services can communicate, while everything else is blocked by default.
 The goal is to prevent lateral movement, reduce blast radius, and enforce least-privilege networking.
 
+**Docker Networking.**
+
+Docker networking is the system that enables containers to communicate with each other, the host, and external networks. It defines how data moves between containers and across systems during containerized application execution.
+
+It provides isolated, flexible network environments using built-in drivers like bridge, host, overlay, and none. Each driver supports different use cases, such as local development, swarm-based orchestration, or integration with legacy infrastructure. 
+
+Docker supports six network types to manage container communication that implement core networking functionality:
+
+<img width="665" height="814" alt="image" src="https://github.com/user-attachments/assets/bb4fb84b-7365-4749-a243-21e4ae8500a7" />
+
+
 Distroless images in container:
 
 
@@ -412,12 +417,16 @@ Real time challenges:
 #Docker Daemon runs as a root user. Which is a security threat. Any process running as a root can have adverse effects. When it is comprised for security reasons, it can impact other applications or containers on the host.
 #Resource Constraints: If you're running too many containers on a single host, you may experience issues with resource constraints. This can result in slow performance or crashes.
 
+**How to secure Docker networking?**
+To secure Docker networking:
 
-
-Secure Containers:
-
-
-
+Use user-defined networks to segment services.
+Limit published ports to only what is required.
+Run containers as non-root users and apply --cap-drop to remove unnecessary capabilities.
+Separate frontend and backend networks for better isolation.
+Use mTLS for encrypted service-to-service communication.
+Consider macvlan networks for strict isolation from the host and other containers.
+Regularly scan images, update dependencies, and rotate secrets.
 
 
 Docker Compose:
@@ -435,6 +444,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
