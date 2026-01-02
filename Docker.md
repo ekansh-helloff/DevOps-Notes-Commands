@@ -129,8 +129,8 @@ Docker stores it under /var/lib/docker/volumes/db_data/_data.
 
 2. Bind Mounts
 
-
 version: "3.9"
+
 services:
   web:
     image: nginx:latest
@@ -376,6 +376,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
