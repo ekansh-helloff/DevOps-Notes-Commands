@@ -106,7 +106,6 @@ Volumes:::
 1. Named Volumes
 
 version: "3.9"
-
 services:
   db:
     image: postgres:16
@@ -132,7 +131,6 @@ Docker stores it under /var/lib/docker/volumes/db_data/_data.
 
 
 version: "3.9"
-
 services:
   web:
     image: nginx:latest
@@ -143,9 +141,7 @@ services:
 
 
 ./html → local directory on your machine.
-
 /usr/share/nginx/html → directory inside container.
-
 :ro makes it read-only.
 
 
@@ -158,15 +154,18 @@ services:
     image: node:20
     working_dir: /usr/src/app
     volumes:
+      - app-data:/usr/src/app/data # Named volume (persistent data)
       - ./src:/usr/src/app         # Bind mount (for dev)
-      - app_data:/usr/src/app/data # Named volume (persistent data)
       - type: tmpfs
         target: /tmp               # In-memory storage
     ports:
       - "3000:3000"
 
+volumes:
+  app-data
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -377,6 +376,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
