@@ -116,10 +116,9 @@ services:
       POSTGRES_DB: mydb
     volumes:
       - db_data:/var/lib/postgresql/data
-
+      
 volumes:
   db_data:
-
  
 db_data is a named volume managed by Docker.
 
@@ -376,6 +375,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
