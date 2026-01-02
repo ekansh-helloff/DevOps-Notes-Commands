@@ -103,134 +103,71 @@ Dockerfile is a file where you provide the steps to build your Docker Image...
 
 Volumes:::
 
-**1\. Named Volumes**
-
-
+1. Named Volumes
 
 version: "3.9"
 
 services:
-
-&nbsp; db:
-
-&nbsp;   image: postgres:16
-
-&nbsp;   container\_name: my\_postgres
-
-&nbsp;   environment:
-
-&nbsp;     POSTGRES\_USER: user
-
-&nbsp;     POSTGRES\_PASSWORD: pass
-
-&nbsp;     POSTGRES\_DB: mydb
-
-&nbsp;   volumes:
-
-&nbsp;     - db\_data:/var/lib/postgresql/data
-
-
+  db:
+    image: postgres:16
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
 volumes:
+  db_data:
 
-&nbsp; db\_data:
-
-
-
-&nbsp;
-
-db\_data is a named volume managed by Docker.
-
-
+ 
+db_data is a named volume managed by Docker.
 
 The data persists even if the container is removed.
 
+Docker stores it under /var/lib/docker/volumes/db_data/_data.
 
-
-Docker stores it under /var/lib/docker/volumes/db\_data/\_data.
-
-
-
-**2\. Bind Mounts**
-
-
-
+2. Bind Mounts
 
 
 version: "3.9"
 
-
-
 services:
-
-&nbsp; web:
-
-&nbsp;   image: nginx:latest
-
-&nbsp;   ports:
-
-&nbsp;     - "8080:80"
-
-&nbsp;   volumes:
-
-&nbsp;     - ./html:/usr/share/nginx/html:ro
-
-
-
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
 
 
 ./html → local directory on your machine.
 
-
-
 /usr/share/nginx/html → directory inside container.
-
-
 
 :ro makes it read-only.
 
 
-
-
-
-3\. using tmpfs 
-
-
-
+3. using tmpfs 
 
 
 version: "3.9"
 
-
-
 services:
-
-&nbsp; app:
-
-&nbsp;   image: node:20
-
-&nbsp;   working\_dir: /usr/src/app
-
-&nbsp;   volumes:
-
-&nbsp;     - ./src:/usr/src/app         # Bind mount (for dev)
-
-&nbsp;     - app\_data:/usr/src/app/data # Named volume (persistent data)
-
-&nbsp;     - type: tmpfs
-
-&nbsp;       target: /tmp               # In-memory storage
-
-&nbsp;   ports:
-
-&nbsp;     - "3000:3000"
-
-
+  app:
+    image: node:20
+    working_dir: /usr/src/app
+    volumes:
+      - ./src:/usr/src/app         # Bind mount (for dev)
+      - app_data:/usr/src/app/data # Named volume (persistent data)
+      - type: tmpfs
+        target: /tmp               # In-memory storage
+    ports:
+      - "3000:3000"
 
 volumes:
-
-&nbsp; app\_data:
-
+  app_data:
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -444,6 +381,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
