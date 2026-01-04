@@ -105,15 +105,23 @@ Volumes:::
 
 **Volume Types**
 Volumes are managed by Docker and stored in a Docker-controlled area, typically /var/lib/docker/volumes/, making them ideal for sharing data across containers without host path dependencies. Named volumes have user-defined names (e.g., docker volume create my-vol) for easy management and reuse, while anonymous volumes lack names and are tied to specific containers.
-​
+
+**Volumes**
+Create a named volume with docker volume create my-vol. 
+List volumes using docker volume ls, 
+inspect with docker volume inspect my-vol, 
+and remove with docker volume rm my-vol or prune unused ones via docker volume prune. Mount into a container using docker run -d --name mycontainer -v my-vol:/app nginx:latest or --mount type=volume,src=my-vol,dst=/app.
+​​
 
 **Bind Mounts**
 Bind mounts link a host file or directory directly to a container path (e.g., -v /host/path:/container/path), allowing real-time changes but requiring careful host path management and potential permission issues.
 ​
-
+Bind mounts use host paths directly without a create command; Docker creates the target if needed with -v. Mount a host directory with docker run -d --name mycontainer -v /host/path:/container/path nginx:latest or --mount type=bind,src=/host/path,dst=/container/path. Add options like :ro for read-only, e.g., -v /host/path:/container/path:ro, or bind propagation like :rslave.
+​
 **Tmpfs Mounts**
 Tmpfs mounts use in-memory storage (RAM) for temporary, non-persistent data (e.g., --mount type=tmpfs,dst=/app), which is cleared on container restart and suits sensitive or short-lived data.​
 
+Tmpfs mounts store data in memory and require the --mount flag (Linux only, not supported with -v). Use docker run -d --name mycontainer --mount type=tmpfs,dst=/app,tmpfs-size=100m nginx:latest to create a 100MB tmpfs mount at /app. Options include tmpfs-mode=0700 for permissions or tmpfs-nocopy to skip copying existing data.
 
 1. Named Volumes
 
@@ -387,6 +395,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
