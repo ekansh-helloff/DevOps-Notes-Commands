@@ -20,7 +20,7 @@ _**Features of Docker**_
 •	To reduce the risks, it uses dependencies.
 
 
-Disadvantages of Docker
+**Disadvantages of Docker**
 •	Complexity will increase due to layering.
 •	It is difficult to manage a large number of containers.
 •	For an application that needs better graphics, Docker is not suitable for it.
@@ -102,6 +102,18 @@ Dockerfile is a file where you provide the steps to build your Docker Image...
 \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
 Volumes:::
+
+**Volume Types**
+Volumes are managed by Docker and stored in a Docker-controlled area, typically /var/lib/docker/volumes/, making them ideal for sharing data across containers without host path dependencies. Named volumes have user-defined names (e.g., docker volume create my-vol) for easy management and reuse, while anonymous volumes lack names and are tied to specific containers.
+​
+
+**Bind Mounts**
+Bind mounts link a host file or directory directly to a container path (e.g., -v /host/path:/container/path), allowing real-time changes but requiring careful host path management and potential permission issues.
+​
+
+**Tmpfs Mounts**
+Tmpfs mounts use in-memory storage (RAM) for temporary, non-persistent data (e.g., --mount type=tmpfs,dst=/app), which is cleared on container restart and suits sensitive or short-lived data.​
+
 
 1. Named Volumes
 
@@ -375,6 +387,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
