@@ -117,6 +117,7 @@ and remove with docker volume rm my-vol or prune unused ones via docker volume p
 Bind mounts link a host file or directory directly to a container path (e.g., -v /host/path:/container/path), allowing real-time changes but requiring careful host path management and potential permission issues.
 ​
 Bind mounts use host paths directly without a create command; Docker creates the target if needed with -v. Mount a host directory with docker run -d --name mycontainer -v /host/path:/container/path nginx:latest or --mount type=bind,src=/host/path,dst=/container/path. Add options like :ro for read-only, e.g., -v /host/path:/container/path:ro, or bind propagation like :rslave.
+
 ​
 **Tmpfs Mounts**
 Tmpfs mounts use in-memory storage (RAM) for temporary, non-persistent data (e.g., --mount type=tmpfs,dst=/app), which is cleared on container restart and suits sensitive or short-lived data.​
@@ -395,6 +396,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
