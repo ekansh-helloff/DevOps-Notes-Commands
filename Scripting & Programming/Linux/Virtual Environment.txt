@@ -1,0 +1,13 @@
+If you use a windows machine (I use a Windows 10) do the following to activate a virtual environment
+
+D:\workspace> python -m venv project-one
+
+D:\workspace> cd project-one
+
+D:\workspace\project-one> Scripts\activate
+
+(project-one) D:\workspace\project-one> # you should see your virtual environment folder name in brackets at the start of every line in the command prompt. This indicates that your virtual environment is now active
+
+To deactivate
+
+(project-one) D:\workspace\project-one> deactivate

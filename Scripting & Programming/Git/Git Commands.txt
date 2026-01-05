@@ -1,0 +1,61 @@
+echo "# DevOps_Commands" >> README.md
+
+git init
+git add README.md
+git add .
+git commit -m "first commit"       #git branch -M old new Force rename (even if name exists)
+git branch -M main                 #git branch -m old new Rename (fails if name already exists)                                 
+git remote add origin https://github.com/ekansh-helloff/DevOps_Commands.git
+git push -u origin main
+git branch -d feat/xyz             #Delete local branch
+git branch -D feat/xyz             #If Git refuses with a warning (not merged), you can force delete with
+git push origin --delete feat/xyz  #This deletes the remote branch from GitHub/GitLab/Bitbucket.
+git branch                         #List branches
+git checkout -b main               #Create branch
+git checkout feature               #Switch branch
+git push origin --delete feat/login #Delete remote branch	
+git branch -r                      #List remote branches
+git log --oneline                  #git logs in a single line
+
+git reset --soft HEAD~1            #Undo last commit (move branch, but keep code/directory and staging)
+git reset mixed****                      #Undo last commit (move branch and staging too, but keep code/directory)
+git reset --hard HEAD~1            #Undo last commit (move branch, remove code/directory and staging also)
+git revert <commit-id>             #Creates new commit that undoes changes, nothin is deleted
+git reflog 
+
+
+========================================================= ADVANCED COMMANDS ========================================================================
+
+gh repo delete <username>/<repo_name> --confirm
+
+git merge feature                  #Combines branches preserving history
+git rebase main                    #Rewrites history by moving commits, Makes commit history clean & linear, Dangerous if branch is shared (history rewrite)
+git checkout production ==> git cherry-pick 9f8de2a        # Cherry-pick is used for selectively applying commits across branches without merging the full branch.
+( git cherry-pick --continue/git cherry-pick --abort )
+
+{In hotfix or emergency production support, cherry-pick is widely used. For example, if a fix is done on a feature branch but must go to production immediately,
+I'll cherry-pick only that commit to main or release. If there is a conflict, I resolve it, add the file, and continue. This avoids merging unnecessary incomplete
+development code into production.}
+
+git rebase -i HEAD~5
+      |||O/p|||
+~pick 9a3d123 added login UI
+~pick 19c029c fixed typo
+~pick 3be1a39 fixed another typo
+~pick 82c93fa removed print statement
+~pick bcd9321 final fix
+
+s / squash	combine commits
+r / reword	edit commit message
+d / drop	delete commit
+edit	modify commit content
+
+pick 9a3d123 added login UI
+s 19c029c fixed typo
+s 3be1a39 fixed another typo
+s 82c93fa removed print statement
+pick bcd9321 final fix
+
+git merge --squash feature/login        #All 10 commits of branch become 1 clean commit on main. ✔ easy revert, ✔ clean history, ✔ ideal for CI/CD release notes
+
+Fast-forward merge

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Configuration
+group_name="myapp"
+log_dir="/var/log/$group_name"
+archive_dir="/var/log/${group_name}_archive"
+retention_days=7
+alert_email="admin@example.com"
+
+# Ensure archive directory exists
+mkdir -p "$archive_dir"
+
+# Archive logs with timestamp
+timestamp=$(date +%F)
+archive_file="$archive_dir/${group_name}_logs_$timestamp.tar.gz"
+if tar -czf "$archive_file" -C "$log_dir" ./*.log; then
+  echo "Logs archived to $archive_file"
+else
+  echo "[ERROR] Failed to create archive $archive_file" | mail -s "Log Rotation Failure" "$alert_email"
+  exit 1
+fi
+
+# Clean up original logs
+git_exit=$?  # preserve previous exit code for alert
+rm -f "$log_dir"/*.log
+
+# Delete archives older than retention period
+find "$archive_dir" -type f -name "${group_name}_logs_*.tar.gz" -mtime +$retention_days -print -delete
+
+# Send success alert
+echo "Log rotation completed. Archives older than $retention_days days have been removed." | mail -s "Log Rotation Success" "$alert_email"

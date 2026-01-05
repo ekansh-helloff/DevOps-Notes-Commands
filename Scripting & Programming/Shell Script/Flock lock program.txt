@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# === Configurable Variables ===
+LOCKFILE="/tmp/myjob.lock"
+LOGFILE="/var/log/myjob.log"
+JOB_NAME="My Scheduled Job"
+NOTIFY_EMAIL="admin@example.com"   # (Optional)
+SLACK_WEBHOOK_URL=""               # (Optional)
+
+# === Setup File Descriptor for Lock ===
+exec 200>"$LOCKFILE"
+flock -n 200 || {
+    echo "$(date '+%F %T') [$JOB_NAME] Another instance is already running. Exiting." >> "$LOGFILE"
+    exit 1
+}
+
+echo "$(date '+%F %T') [$JOB_NAME] Starting job..." >> "$LOGFILE"
+START_TIME=$(date +%s)
+
+# === Actual Job Logic Below ===
+{
+    # Simulate task
+    echo "$(date '+%F %T') [$JOB_NAME] Performing main task..." >> "$LOGFILE"
+    
+    # Example: rsync, backup, or your actual job
+    # /usr/bin/rsync -av /data /backup/ >> "$LOGFILE" 2>&1
+    
+    sleep 5  # simulate long task
+    
+    echo "$(date '+%F %T') [$JOB_NAME] Task completed successfully." >> "$LOGFILE"
+} || {
+    echo "$(date '+%F %T') [$JOB_NAME] Job failed." >> "$LOGFILE"
+    # Optional alert:
+    # echo "[$JOB_NAME] failed on $(hostname) at $(date)" | mail -s "$JOB_NAME Failed" "$NOTIFY_EMAIL"
+    exit 2
+}
+
+# === Job Completion Logging ===
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+
+echo "$(date '+%F %T') [$JOB_NAME] Completed in ${DURATION}s" >> "$LOGFILE"
+
+# Optional Slack Alert (Uncomment if needed)
+# if [ -n "$SLACK_WEBHOOK_URL" ]; then
+#     curl -s -X POST -H 'Content-type: application/json' \
+#     --data "{\"text\":\"✅ $JOB_NAME completed on $(hostname) in ${DURATION}s.\"}" \
+#     "$SLACK_WEBHOOK_URL"
+# fi
+
+exit 0

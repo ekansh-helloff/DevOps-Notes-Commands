@@ -1,0 +1,53 @@
+
+Shell Script Comparison Cheat Sheet 🧾
+
+🔢 NUMERIC COMPARISON (with [ ... ])
+-------------------------------------
+[ a -eq b ]   → a is equal to b
+[ a -ne b ]   → a is not equal to b
+[ a -gt b ]   → a is greater than b
+[ a -ge b ]   → a is greater than or equal to b
+[ a -lt b ]   → a is less than b
+[ a -le b ]   → a is less than or equal to b
+
+🅰️ STRING COMPARISON
+----------------------
+[ "$a" = "$b" ]    → a is equal to b (string)
+[ "$a" != "$b" ]   → a is not equal to b
+[ -z "$a" ]        → a is an empty string
+[ -n "$a" ]        → a is a non-empty string
+[ "$a" \< "$b" ]   → a is less than b (ASCII)
+[ "$a" \> "$b" ]   → a is greater than b (ASCII)
+
+🔁 LOGICAL OPERATORS
+---------------------
+[ cond1 ] && [ cond2 ]   → both conditions are true (AND)
+[ cond1 ] || [ cond2 ]   → either condition is true (OR)
+
+🧮 ARITHMETIC COMPARISON (with (( ... )))
+------------------------------------------
+(( a == b ))   → a is equal to b
+(( a != b ))   → a is not equal to b
+(( a > b ))    → a is greater than b
+(( a >= b ))   → a is greater than or equal to b
+(( a < b ))    → a is less than b
+(( a <= b ))   → a is less than or equal to b
+
+📂 FILE TEST OPERATORS
+-----------------------
+[ -e file ]   → file exists
+[ -f file ]   → file is a regular file
+[ -d file ]   → file is a directory
+[ -s file ]   → file is not empty
+[ -r file ]   → file is readable
+[ -w file ]   → file is writable
+[ -x file ]   → file is executable
+
+🚀 BASH ADVANCED (with [[ ... ]])
+----------------------------------
+[[ $a == E* ]]  → true if $a starts with "E"
+[[ $a =~ regex ]] → true if $a matches regex
+
+Note:
+- Use [[ ... ]] for better syntax in Bash (no escaping \< \>).
+- Use (( ... )) for arithmetic expressions.

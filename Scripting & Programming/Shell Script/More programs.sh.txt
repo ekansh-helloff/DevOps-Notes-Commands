@@ -1,0 +1,172 @@
+3. Restart service if down
+
+service="nginx"
+if ! pgrep -x "$service" > /dev/null; then
+  systemctl restart $service
+fi
+
+4. Git pull and restart service
+
+cd /var/www/app
+git pull origin main
+systemctl restart app
+
+5. Log backup and delete old files
+
+backup_dir="/backup/logs"
+mkdir -p $backup_dir
+tar -czf $backup_dir/logs_$(date +%F).tgz /var/log/*.log
+find $backup_dir -type f -mtime +7 -delete
+
+10. Multi-server info collection
+
+for server in server1 server2; 
+do
+  ssh $server 'echo $(hostname); top -b -n1 | head -5'
+done
+
+
+---------------------
+
+📝 Bonus Script Tasks
+
+#Port Monitoring
+
+nc -zv localhost 8080 || echo "Port 8080 down"
+
+#Extract errors from last 1 hour
+
+grep "$(date --date='1 hour ago' '+%H')" /var/log/syslog | grep "ERROR"
+
+#Compare directories
+
+diff -qr dir1/ dir2/
+
+#Validate YAML/JSON
+
+yamllint config.yaml
+jq . config.json
+
+#Bulk user creation
+
+while IFS=, read user; 
+do
+  useradd $user
+  echo "$user:default123" | chpasswd
+done < users.csv
+
+================================================
+
+#!/bin/bash
+alert=90
+backup_date=$(date +'%m/%d/%Y %H:%M:%S')
+df -H | awk '{print $5 " " $1}' | while read output;
+do
+#echo "Disk Detail: $output"
+usage=$(echo $output | awk '{print $1}' | cut -d'%' -f1)
+file_sys=$(echo $output | awk '{print $2}')
+#echo $usage
+if [ $usage-ge $alert]
+then
+echo "CRITICAL for $file_sys on $backup_date"
+fi
+done
+
+=============================================
+
+read -p "Enter first number: " a
+read -p "Enter second number: " b
+result=$(echo "$a + $b" | bc)
+echo "Sum: $result"
+
+===========================================
+
+bash
+bashstr="   hello world   "
+trimmed="$(echo -e "${bashstr}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+echo "Trimmed: '$trimmed'"
+Explanation
+Variable bashstr Initialization:
+
+bash
+bashstr="   hello world   "
+bashstr contains the string " hello world " with leading and trailing spaces.
+
+Using echo -e "${bashstr}"
+
+echo -e prints the value of bashstr, interpreting any escape sequences (-e not crucial here).
+
+The output passed to sed is: hello world (with spaces unchanged).
+
+sed Commands:
+
+bash
+sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+sed is a stream editor for text manipulation.
+
+The -e option specifies a script or command.
+
+The two commands are substitutions (s/.../.../) applied sequentially:
+
+s/^[[:space:]]*//
+
+^ anchors the match to the start of the line.
+
+[[:space:]]* matches zero or more whitespace characters (space, tab, newline, etc.).
+
+Replaces this leading whitespace with nothing (effectively deleting it).
+
+s/[[:space:]]*$//
+
+$ anchors the match to the end of the line.
+
+[[:space:]]* matches zero or more whitespace characters at the end.
+
+This deletes trailing whitespace.
+
+Assigning to trimmed:
+
+The command substitution $(...) captures the output of the echo-pipe-sed pipeline.
+
+It stores the whitespace-trimmed string in the trimmed variable.
+
+Output:
+
+bash
+echo "Trimmed: '$trimmed'"
+Prints the trimmed string, showing removal of spaces around "hello world".
+
+The quotes in output help visualize that spaces are removed.
+
+===================================
+
+#!/bin/bash
+
+str="hello devops"
+
+# Using tr
+upper=$(echo "$str" | tr '[:lower:]' '[:upper:]')
+echo "Uppercase (tr): $upper"
+
+# Using awk
+upper2=$(echo "$str" | awk '{print toupper($0)}')
+echo "Uppercase (awk): $upper2"
+
+# Using Bash (>=4.0)
+upper3=${str^^}
+echo "Uppercase (bash): $upper3"
+👉 Output:
+
+java
+Copy code
+Uppercase (tr): HELLO DEVOPS
+Uppercase (awk): HELLO DEVOPS
+Uppercase (bash): HELLO DEVOPS
+
+-----------------------------------------------
+
+✅ Recommended way (if bash ≥ 4.0):
+
+${str^^} → uppercase
+
+${str,,} → lowercase
