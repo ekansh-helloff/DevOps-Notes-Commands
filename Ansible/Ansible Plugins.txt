@@ -1,0 +1,163 @@
+1. Lookup Plugins
+
+👉 Used to fetch data from external sources or local files into your playbooks.
+
+Common Examples:
+
+lookup('file', '/path/to/file') → Reads content from a file.
+lookup('env', 'HOME') → Reads environment variables.
+lookup('password', '/tmp/passfile chars=ascii') → Generates/reads passwords.
+
+Example: Fetching SSH key from local file and using it:
+
+- name: Add authorized key from file
+  hosts: webservers
+  tasks:
+    - name: Add SSH key from file
+      ansible.builtin.authorized_key:
+        user: devops
+        key: "{{ lookup('file', '/home/devops/.ssh/id_rsa.pub') }}"
+
+✅ Interview Tip: Show how lookups help in secrets, dynamic inputs, or reading configs. I use lookup plugins to dynamically fetch values like SSH keys, environment variables, or vault secrets instead of hardcoding them.”
+
+
+
+
+2. Filter Plugins
+
+👉 Used to transform/manipulate data inside Jinja2 templates and playbooks.
+
+Common Examples:
+
+| upper → Convert to uppercase.
+
+| default('value') → Default value if empty.
+
+| to_json → Convert data to JSON.
+
+| unique | sort → Deduplicate & sort a list.
+
+Example:
+
+- name: Demonstrate filter plugins
+  hosts: localhost
+  tasks:
+    - name: Print filtered data
+      ansible.builtin.debug:
+        msg: "Unique users are: {{ ['alice', 'bob', 'alice'] | unique | sort }}"
+
+
+✅ Interview Tip: Stress that filters make data clean & reusable in automation. “Filters are like data transformation tools. I often use them to clean up lists, deduplicate items, and format data before applying in playbooks.”
+
+
+
+3. Callback Plugins
+
+👉 Used to change the way Ansible outputs results/logs.
+
+Popular Plugins:
+
+default → Standard output.
+
+yaml → Cleaner YAML-style output.
+
+json → JSON format (used in CI/CD pipelines).
+
+timer → Shows playbook execution time.
+
+📌 In ansible.cfg:
+
+[defaults]
+stdout_callback = json
+
+
+📌 Playbook:
+
+- name: Callback Plugin Example
+  hosts: localhost
+  tasks:
+    - name: Print message
+      ansible.builtin.debug:
+        msg: "This will be shown in JSON format"
+
+
+✅ Interview Tip: Mention that callbacks are super useful for CI/CD logging or making Ansible output readable. “I use callback plugins like yaml for human-readable output and json when integrating with Jenkins CI pipelines.”
+
+
+
+4. Connection Plugins
+
+👉 Define how Ansible connects to remote systems.
+
+Popular Plugins:
+
+ssh (default)
+
+paramiko (Python-based SSH library)
+
+local (run playbook on localhost)
+
+docker (connect inside containers)
+
+Example: Running playbook on localhost using local:
+
+- name: Run tasks locally
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Show hostname
+      ansible.builtin.command: hostname
+
+👉 Scenario: You want to run tasks inside a Docker container.
+
+- name: Connection Plugin Example (Docker)
+  hosts: mycontainer
+  connection: docker
+  tasks:
+    - name: Check OS release inside container
+      ansible.builtin.command: cat /etc/os-release
+
+
+✅ Interview Tip: Stress how you use ssh normally, but for containers/localhost testing you use docker/local.
+
+
+5. Strategy Plugins
+
+👉 Define how tasks run across multiple hosts.
+
+Popular Strategies:
+
+linear (default, run hosts one by one per task).
+
+free (run tasks independently, faster).
+
+debug (used for troubleshooting).
+
+Example: Running tasks in free strategy for faster parallel execution:
+
+- name: Run in parallel
+  hosts: all
+  strategy: free
+  tasks:
+    - name: Print hostname
+      ansible.builtin.command: hostname
+
+
+✅ Interview Tip: Show awareness of linear vs free (parallel execution). “I use the free strategy for faster deployments in large clusters since it allows independent execution per host, unlike the default linear strategy.”
+
+
+
+
+“Ansible plugins extend its functionality.
+I’ve worked with:
+
+Lookup plugins – e.g., fetching SSH keys from files or passwords from Vault dynamically.
+
+Filter plugins – e.g., cleaning user lists with unique | sort | upper.
+
+Callback plugins – e.g., sending JSON logs to Jenkins pipelines.
+
+Connection plugins – e.g., using docker plugin to run playbooks inside containers.
+
+Strategy plugins – e.g., free strategy to parallelize tasks in big clusters.
+These help in making playbooks dynamic, cleaner, and scalable.”

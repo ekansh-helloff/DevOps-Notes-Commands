@@ -1,0 +1,218 @@
+# This playbook demonstrates common modules, plugins and best practices for interviews
+---
+- name: Example Ansible Playbook for Interview
+  hosts: webservers
+  become: yes
+  vars:
+    http_port: 80
+  tasks:
+    - name: Install httpd package using yum module
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable httpd service using service module
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Deploy custom index.html using template module
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /var/www/html/index.html
+
+    - name: Create application user using user module
+      ansible.builtin.user:
+        name: appuser
+        state: present
+
+    - name: Copy configuration file using copy module
+      ansible.builtin.copy:
+        src: files/app.conf
+        dest: /etc/app/app.conf
+
+  handlers:
+    - name: Restart httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+
+# Example of a lookup plugin usage
+- name: Demonstrate lookup plugin example
+  hosts: localhost
+  tasks:
+    - name: Read a local file using lookup
+      debug:
+        msg: "File content is {{ lookup('ansible.builtin.file', 'files/sample.txt') }}"
+
+  # Additional examples
+    - name: Create directory using file module
+      ansible.builtin.file:
+        path: /opt/myapp
+        state: directory
+
+    - name: Download file using get_url module
+      ansible.builtin.get_url:
+        url: https://example.com/app.tar.gz
+        dest: /tmp/app.tar.gz
+
+    - name: Extract archive using unarchive module
+      ansible.builtin.unarchive:
+        src: /tmp/app.tar.gz
+        dest: /opt/myapp
+        remote_src: yes
+
+    - name: Update configuration line using lineinfile module
+      ansible.builtin.lineinfile:
+        path: /etc/app/app.conf
+        regexp: '^PORT='
+        line: 'PORT={{ http_port }}'
+
+    - name: Use shell module with loop
+      ansible.builtin.shell: "echo Hello {{ item }} >> /tmp/hello.txt"
+      loop:
+        - world
+        - devops
+
+    - name: Conditional task example
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+      when: http_port == 80
+
+    - name: Use register and debug
+      ansible.builtin.command: hostname
+      register: host_output
+
+    - name: Print hostname
+      debug:
+        var: host_output.stdout
+
+
+# Role example structure (for interview)
+# roles/web/tasks/main.yml
+# ---
+# - name: Install httpd
+#   ansible.builtin.yum:
+#     name: httpd
+#     state: present
+#   tags: install
+#
+# - name: Configure httpd
+#   ansible.builtin.template:
+#     src: templates/httpd.conf.j2
+#     dest: /etc/httpd/conf/httpd.conf
+#   notify: restart httpd
+#   tags: config
+#
+# roles/web/handlers/main.yml
+# ---
+# - name: restart httpd
+#   ansible.builtin.service:
+#     name: httpd
+#     state: restarted
+#
+# Example block/rescue section
+- name: Example block with rescue
+  hosts: webservers
+  tasks:
+    - block:
+        - name: Try to install custom package
+          ansible.builtin.yum:
+            name: custompkg
+            state: present
+      rescue:
+        - name: Fallback to install httpd instead
+          ansible.builtin.yum:
+            name: httpd
+            state: present
+
+# Facts and Jinja filters example
+- name: Use ansible facts
+  hosts: all
+  tasks:
+    - name: Print OS distribution
+      ansible.builtin.debug:
+        msg: "This host is running {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+
+    - name: Using Jinja filter
+      ansible.builtin.debug:
+        msg: "Hostname in upper case is {{ ansible_hostname | upper }}"
+
+# Synchronize module examples
+- name: Deploy application using synchronize module (push style)
+  hosts: webservers
+  become: yes
+  vars:
+    source_dir: /home/devops/build/
+    dest_dir: /var/www/html/app/
+  tasks:
+    - name: Sync application files from control node to remote servers
+      ansible.builtin.synchronize:
+        src: "{{ source_dir }}"
+        dest: "{{ dest_dir }}"
+        delete: yes
+        recursive: yes
+        compress: yes
+        rsync_opts:
+          - "--chmod=ugo=rwX"
+          - "--exclude=.git"
+    - name: Restart web service after deployment
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+
+- name: Collect logs from web servers (pull style)
+  hosts: webservers
+  become: yes
+  vars:
+    remote_log_dir: /var/log/httpd/
+    local_destination: /home/devops/collected_logs/{{ inventory_hostname }}/
+  tasks:
+    - name: Pull logs from remote server to control node
+      ansible.builtin.synchronize:
+        src: "{{ remote_log_dir }}"
+        dest: "{{ local_destination }}"
+        mode: pull
+        recursive: yes
+        compress: yes
+        rsync_opts:
+          - "--exclude=*.gz"
+
+- name: Collect logs but exclude multiple patterns
+  hosts: webservers
+  become: yes
+  vars:
+    remote_log_dir: /var/log/httpd/
+    local_destination: /home/devops/collected_logs/{{ inventory_hostname }}/
+  tasks:
+    - name: Pull logs excluding .gz, .tmp, and old/ directory
+      ansible.builtin.synchronize:
+        src: "{{ remote_log_dir }}"
+        dest: "{{ local_destination }}"
+        mode: pull
+        recursive: yes
+        compress: yes
+        rsync_opts:
+          - "--exclude=*.gz"
+          - "--exclude=*.tmp"
+          - "--exclude=old/"
+
+- name: Collect only .log files using include/exclude
+  hosts: webservers
+  become: yes
+  vars:
+    remote_log_dir: /var/log/httpd/
+    local_destination: /home/devops/filtered_logs/{{ inventory_hostname }}/
+  tasks:
+    - name: Pull only .log files
+      ansible.builtin.synchronize:
+        src: "{{ remote_log_dir }}"
+        dest: "{{ local_destination }}"
+        mode: pull
+        recursive: yes
+        compress: yes
+        rsync_opts:
+          - "--include=*.log"
+          - "--exclude=*"

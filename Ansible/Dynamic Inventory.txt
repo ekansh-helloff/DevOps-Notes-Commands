@@ -1,0 +1,105 @@
+Azure Dynamic Inventory Configuration
+For Microsoft Azure environments:
+
+text
+# azure_inventory.yml
+
+plugin: azure.azcollection.azure_rm
+include_vm_resource_groups:
+  - production-rg
+  - staging-rg
+
+keyed_groups:
+  - key: location
+    prefix: azure_region
+  - key: tags.environment
+    prefix: env
+  - key: tags.role
+    prefix: role
+
+conditional_groups:
+  production: tags.environment == "production"
+  staging: tags.environment == "staging"
+  web: tags.role == "web"
+  database: tags.role == "database"
+
+compose:
+  ansible_host: public_ipv4_addresses[0] | default(private_ipv4_addresses[0])
+  ansible_user: "'azureuser'"
+
+
+================================================================================================
+
+Enterprise Best Practices
+Security and Access Control
+API Authentication: Secure API credentials using environment variables or Ansible Vault:
+
+python
+# Secure credential handling
+api_token = os.environ.get('CORP_API_TOKEN')
+if not api_token:
+    raise ValueError("CORP_API_TOKEN environment variable required")
+Role-Based Access: Implement role-based access controls to ensure only authorized users can modify inventory scripts.
+
+Performance Optimization
+Caching Implementation: Enable caching to reduce API calls and improve performance:
+
+text
+# In ansible.cfg
+[inventory]
+cache = True
+cache_plugin = jsonfile
+cache_timeout = 3600
+cache_connection = /tmp/ansible_cache
+Filtering and Limiting: Use precise filtering to reduce overhead:
+
+bash
+# Target specific groups
+ansible-playbook -i dynamic_inventory.py --limit production playbook.yml
+
+===========================================================================================
+
+Monitoring and Maintenance
+Error Handling: Implement comprehensive error handling and logging:
+
+python
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def fetch_hosts_with_retry(api_url, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(api_url, timeout=30)
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            logger.warning(f"Attempt {attempt + 1} failed: {e}")
+            if attempt == max_retries - 1:
+                raise
+Automated Refresh: Schedule regular inventory updates using cron jobs:
+
+bash
+# Update inventory every hour
+0 * * * * ansible-playbook /path/to/inventory_update.yml
+Integration Patterns
+CMDB Integration: Connect with corporate Configuration Management Databases for authoritative host information.
+
+Multi-Cloud Support: Design scripts to handle multiple cloud providers and hybrid environments.
+
+Environment Separation: Maintain separate inventory configurations per environment to prevent cross-environment mistakes.
+
+--
+Validation Commands: Test inventory output format:
+
+bash
+# Validate JSON format
+./corporate_inventory.py --list | python -m json.tool
+
+# Test specific host
+./corporate_inventory.py --host web01.corp.com
+
+# Verify with ansible-inventory
+ansible-inventory -i corporate_inventory.py --list --export
+

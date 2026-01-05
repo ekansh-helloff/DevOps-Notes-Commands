@@ -1,0 +1,61 @@
+How to Use the firewalld Module in Ansible
+
+
+1. Enabling Services (Example: HTTP/HTTPS)
+text
+- name: Enable HTTP and HTTPS services in firewalld
+  hosts: all
+  become: yes
+  tasks:
+    - name: Open HTTP and HTTPS ports
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: yes
+        state: enabled
+        immediate: yes
+      loop:
+        - http
+        - https
+service: The name of the firewalld service (as shown by firewall-cmd --get-services).
+
+permanent: yes: Makes the rule persistent across reboots.
+
+immediate: yes: Applies the rule instantly without needing to reload firewalld.
+
+2. Opening and Closing Ports
+text
+- name: Open port 8080/tcp
+  ansible.posix.firewalld:
+    port: 8080/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+- name: Close port 3306/tcp
+  ansible.posix.firewalld:
+    port: 3306/tcp
+    permanent: yes
+    state: disabled
+    immediate: yes
+
+3. Using Rich Rules
+Rich rules allow finer control (like logging, rate-limiting, or complex filtering):
+
+text
+- name: Add a rich rule to firewalld
+  ansible.posix.firewalld:
+    rich_rule: 'rule family=ipv4 source address="192.0.2.0/24" port port=2222 protocol=tcp accept'
+    zone: public
+    permanent: yes
+    state: enabled
+    immediate: yes
+
+4. Adding Source Addresses or Zones
+text
+- name: Allow traffic from a specific source in the internal zone
+  ansible.posix.firewalld:
+    source: 192.168.0.0/24
+    zone: internal
+    state: enabled
+    permanent: yes
+    immediate: yes

@@ -1,0 +1,40 @@
+---
+
+- name: Corporate Production Example with block, rescue, always
+  hosts: webservers
+  become: yes
+
+  tasks:
+    - block:
+        - name: Install Nginx from default repository
+          ansible.builtin.package:
+            name: nginx
+            state: present
+
+        - name: Start Nginx service
+          ansible.builtin.service:
+            name: nginx
+            state: started
+            enabled: yes
+
+      rescue:
+        - name: Use backup repository if default fails
+          ansible.builtin.shell: |
+            echo "deb http://mirror.example.com/ubuntu nginx-stable main" > /etc/apt/sources.list.d/nginx.list
+            apt-get update
+          args:
+            warn: false
+
+        - name: Retry Nginx installation from backup repo
+          ansible.builtin.package:
+            name: nginx
+            state: present
+
+      always:
+        - name: Send deployment log message
+          ansible.builtin.debug:
+            msg: "Nginx installation attempted on {{ inventory_hostname }} (success or failure logged)."
+
+
+“In production, I use block, rescue, always for robust error handling.
+For example, when installing Nginx on multiple servers, if the default repo fails, I switch to a backup repo in the rescue section. Finally, in the always section, I log the status or send a Slack notification, so the team is aware whether it succeeded or failed. This approach avoids deployment breaks and ensures transparency.”

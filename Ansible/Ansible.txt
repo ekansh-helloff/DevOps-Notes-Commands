@@ -1,0 +1,120 @@
+Scenario- System admin has to configure 100s of servers, each with different OS like Ubuntu, CentOS, Windows.
+Tasks include updating OS, security patches, default installations like git, databases on servers. 
+
+Issue- Doing this manually on every server is difficult. Hence, scripts were used. Powershell scripts for windows machines, other shells for Linux machines. Even in Linux machines, scripts varied based Linux flavours and type of script (bash, zsh, tsh, etc). This script will then loop over all servers to perform configuration tasks.
+
+With cloud and micro service architecture adoption, number of servers have increased further. 
+
+Hence, even scripting approach is not very efficient. This led to concept of configuration management. Various tools are used for configuration management. Puppet and Chef were pioneering tools while Ansible, developed by Red Had is most popular.
+
+
+Why Ansible over Puppet?
+	1. Puppet = Pull mechanism, Ansible= Push mechanism. Eg. Managing 10 EC2- Write ansible playbook and push to all 10 EC2
+	2. Puppet uses Master-Agent architecture- Have to create Master server and configure all 10 EC2 as agents. Ansible is agentless. Write only ip/dns of machine in inventory file and have passwordless authentication enabled. In case of dynamic demand, auto-scaling is possible by changing inventory file. Even better- 'Dynamic Inventory' feature auto detects demand- doing away need to change inventory file.
+	3. Support for Windows is better in Ansible than Puppet
+	4. Ansible Playbook is written in YAML which is widely used. Puppet configuration is written in Puppet language.
+	
+	
+Issues with Ansible
+	1. Support for Windows is still not seamless
+	2. Debugging is not easy. Can run ansible in debug mode but debugging logs are not easy to understand.
+	3. Performance issues- when managing thousands of servers
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To differentiate between Windows and Linux (or other operating systems) in Ansible, you have several alternative facts (variables) you can inspect, all of which are populated during fact gathering:
+
+ansible_facts['os_family'] (or ansible_os_family): Broad OS family classification, e.g., 'RedHat', 'Debian', 'Windows', 'Suse', 'Solaris', etc.
+
+ansible_facts['distribution'] (or ansible_distribution): The specific OS distribution, e.g., 'Ubuntu', 'CentOS', 'RedHat', 'Amazon', 'SLES', 'Windows', etc.
+
+ansible_facts['distribution_version'] (or ansible_distribution_version): The complete version of the OS, such as '20.04' for Ubuntu, or '2019' for Windows Server.
+
+ansible_facts['distribution_major_version'] (or ansible_distribution_major_version): Just the major version number of the OS, e.g., '7' for CentOS 7, '2019' for Windows Server 2019.
+
+ansible_facts['system'] (or ansible_system): Lower-level system identifier, e.g., 'Linux', 'Win32NT', 'Darwin', etc.
+
+ansible_facts['platform'] (or ansible_platform): Sometimes helpful for identifying the environment or platform type.
+
+ansible_facts['architecture'] (or ansible_architecture): CPU architecture (e.g., 'x86_64', 'arm64'), useful if you also want to differentiate by hardware.
+
+Which fact to use depends on the level of granularity you need. For broad checks, use os_family; for specific distributions or versions, use distribution and distribution_major_version.
+
+You can always inspect all facts available for any host with:
+
+text
+- name: Print all Ansible facts for debugging
+  ansible.builtin.debug:
+    var: ansible_facts
+Or from the command line:
+
+text
+ansible <hostname> -m ansible.builtin.setup
+This will let you explore all discoverable variables for advanced filtering.
+
+In summary, the most common and reliable facts for differentiating OS type in Ansible include:
+
+ansible_os_family
+
+ansible_distribution
+
+ansible_distribution_major_version
+
+ansible_system
+
+And you can use these facts alone or combined with the when: clause for platform-specific automation.
+
+`````````````````````````````````````````````````````````````````````````````````````````````````````````````~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+
+Dynamic Inventory in Ansible (DevOps Interview Explanation)
+
+A dynamic inventory in Ansible is a way to automatically generate and maintain the list of hosts (servers, VMs, containers, etc.) that Ansible manages by querying external sources (like cloud providers, databases, or custom scripts) in real time, instead of using a static list.
+
+Key Points for a DevOps Interview
+Definition: Dynamic inventory means the host information is generated on the fly, based on the current state in external systems, rather than being hardcoded in a static file.
+
+Why Use It: Dynamic inventory is essential in cloud and auto-scaling environments where servers are frequently created, destroyed, or have changing IP addresses. It ensures your automation always knows the up-to-date list of infrastructure to manage.
+
+--------------------------------------------------------------------------------------------------------
+
+- name: Determine installed version dynamically
+  shell: rpm -q myapp
+  register: app_check
+
+- name: Set app_version fact based on check
+  set_fact:
+    app_version: "{{ app_check.stdout }}"
+
+- name: Use app_version fact
+  debug:
+    msg: "App version installed is {{ app_version }}"
+
+- name: Load OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+vars:
+  app_port: 8080
+vars_files:
+  - "vars/common.yml"
+
+text
+- name: Load OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+Or load variables with a custom variable name:
+
+text
+- name: Include variables into a specific dictionary
+  include_vars:
+    file: vars.yml
+    name: my_vars
+
+---
+- name: Example of include_vars usage
+  hosts: all
+  tasks:
+    - name: Include variables from a file
+      include_vars: vars.yml
+
+    - name: Show a variable loaded from vars.yml
+      debug:
+        var: my_variable

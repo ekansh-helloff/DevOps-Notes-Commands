@@ -1,0 +1,118 @@
+🔧 1. Package Management Modules
+
+Used to install, update, or remove software.
+
+ansible.builtin.yum → manage packages on RHEL/CentOS
+ansible.builtin.apt → manage packages on Debian/Ubuntu
+ansible.builtin.dnf → newer package manager on RHEL 8+
+ansible.builtin.package → generic, auto-detects package manager
+
+ansible.builtin.pip → manage Python packages
+
+🖥 2. Service Management Modules
+
+Used to manage services (start, stop, enable).
+
+ansible.builtin.service → control system services
+
+ansible.builtin.systemd → advanced systemd support
+
+📂 3. File & Directory Modules
+
+For managing files and directories.
+
+ansible.builtin.copy → copy files to remote
+
+ansible.builtin.template → copy Jinja2 template with variable substitution
+
+ansible.builtin.file → create/remove/change file/directory permissions
+
+ansible.builtin.lineinfile → ensure a particular line is present/absent
+
+ansible.builtin.blockinfile → insert/update/remove blocks of text in files
+
+ansible.builtin.replace → search & replace content
+
+ansible.builtin.synchronize → sync files using rsync
+
+👤 4. User & Group Management
+
+ansible.builtin.user → manage user accounts
+
+ansible.builtin.group → manage groups
+
+ansible.builtin.authorized_key → manage SSH authorized keys
+
+🌐 5. Networking Modules
+
+ansible.builtin.uri → interact with HTTP/REST APIs
+
+ansible.builtin.get_url → download files from URLs
+
+community.general.nmcli → manage NetworkManager connections
+
+community.general.iptables → configure firewall rules
+
+⚙️ 6. Command Execution Modules
+
+ansible.builtin.command → run a command (simple, no shell)
+
+ansible.builtin.shell → run a command through shell
+
+ansible.builtin.raw → run raw commands (no Python required)
+
+ansible.builtin.script → run a local script on remote host
+
+📦 7. Archive/Extraction
+
+ansible.builtin.unarchive → extract tar/zip archives
+
+community.general.archive → create archives
+
+☁️ 8. Cloud & Infrastructure (DevOps heavy)
+
+AWS: amazon.aws.ec2, amazon.aws.s3, amazon.aws.cloudformation
+
+Azure: azure.azcollection.azure_rm_*
+
+GCP: google.cloud.gcp_compute_instance
+
+Kubernetes: kubernetes.core.k8s → manage K8s objects
+
+🗄 9. Database Modules
+
+community.mysql.mysql_db → manage MySQL databases
+
+community.postgresql.postgresql_db → manage PostgreSQL databases
+
+community.mongodb.mongodb_user → manage MongoDB
+
+🔑 10. Security & Secrets
+
+ansible.builtin.seboolean → manage SELinux booleans
+
+ansible.builtin.iptables → manage firewall
+
+community.general.hashi_vault → retrieve secrets from HashiCorp Vault
+
+community.crypto.openssl_certificate → manage SSL/TLS certs
+
+📊 11. System Information / Facts
+
+ansible.builtin.setup → gather facts about the system
+
+ansible.builtin.stat → get file/directory status
+
+ansible.builtin.debug → print variables/messages
+
+🔄 12. Utilities
+
+ansible.builtin.include_tasks / import_tasks → modularize playbooks
+
+ansible.builtin.import_playbook → reuse entire playbooks
+
+ansible.builtin.wait_for → wait for port/service/file
+
+ansible.builtin.assert → validate conditions
+
+ansible.builtin.pause → pause execution for user input

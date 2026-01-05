@@ -1,0 +1,65 @@
+---
+- name: Deploy application using synchronize module
+  hosts: webservers
+  become: yes
+
+  vars:
+    source_dir: /home/devops/build/
+    dest_dir: /var/www/html/app/
+
+  tasks:
+    - name: Sync application files from control node to remote servers
+      ansible.builtin.synchronize:
+        src: "{{ source_dir }}"
+        dest: "{{ dest_dir }}"
+        delete: yes                 # Delete files on remote if not present in source
+        recursive: yes              # Recurse into directories
+        compress: yes               # Compress data during transfer (speeds up transfer)
+        rsync_opts:
+          - "--chmod=ugo=rwX"       # Set file permissions on remote server
+          - "--exclude=.git"        # Exclude .git directory
+
+    - name: Restart web service after deployment
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+
+
+#*
+| Feature         | Explanation                                                   |
+| --------------- | ------------------------------------------------------------- |
+| `synchronize:`  | Calls rsync internally to copy data                           |
+| `src`           | Source directory on the **control node**                      |
+| `dest`          | Destination directory on the **remote servers**               |
+| `delete: yes`   | Makes sure destination matches the source (removes old files) |
+| `compress: yes` | Speeds up transfer by compressing data over the network       |
+| `rsync_opts`    | Additional rsync options (permission change, exclude files)   |
+*#
+
+
+Pull-style example with synchronize
+
+
+- name: Collect logs from web servers
+  hosts: webservers
+  become: yes
+
+  vars:
+    remote_log_dir: /var/log/httpd/
+    local_destination: /home/devops/collected_logs/{{ inventory_hostname }}/
+
+  tasks:
+    - name: Pull logs from remote server but exclude archived & temp files
+      ansible.builtin.synchronize:
+        src: "{{ remote_log_dir }}"
+        dest: "{{ local_destination }}"
+        mode: pull
+        recursive: yes
+        compress: yes
+        rsync_opts:
+          - "--exclude=*.gz"    # Exclude compressed logs
+          - "--exclude=*.tmp"   # Exclude temporary files
+          - "--exclude=old/"    # Exclude a whole directory named 'old'
+
+
+“With --include and --exclude, we can define precise file transfer rules. For example, --include=*.log --exclude=* ensures we only copy .log files while ignoring .gz, .tmp, or any other files. This makes synchronization efficient and controlled.”

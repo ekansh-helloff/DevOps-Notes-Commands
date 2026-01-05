@@ -1,0 +1,95 @@
+---
+- name: Complete Playbook to Install and Configure HTTPD
+  hosts: your_target_hosts  # Replace with your target group or host(s)
+  become: true
+
+  vars:
+    web_content: "<h1>Welcome to Apache!</h1>"
+
+  tasks:
+    - name: Install httpd package
+      yum:
+        name: httpd
+        state: present
+
+    - name: Ensure httpd service is started and enabled
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Ensure firewalld is installed
+      yum:
+        name: firewalld
+        state: present
+
+    - name: Ensure firewalld is started and enabled
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Open HTTP port in the firewall
+      firewalld:
+        port: 80/tcp
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: Create a custom index.html
+      copy:
+        dest: /var/www/html/index.html
+        content: "{{ web_content }}"
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Ensure correct permissions on web root
+      file:
+        path: /var/www/html
+        owner: apache
+        group: apache
+        mode: '0755'
+        state: directory
+
+    - name: Check if httpd is running
+      shell: systemctl is-active httpd
+      register: httpd_status
+      ignore_errors: yes
+
+    - name: Print httpd service status
+      debug:
+        msg: "HTTPD is {{ httpd_status.stdout }}"
+
+##########
+
+---
+- name: Install and start Apache HTTPD on Linux
+  hosts: webservers   # Change this to match your inventory group
+  become: true        # Run tasks with sudo
+  tasks:
+
+    - name: Install httpd package
+      yum:
+        name: httpd
+        state: present
+
+    - name: Ensure httpd is started and enabled
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Open HTTP port in firewall (optional)
+      firewalld:
+        port: 80/tcp
+        permanent: true
+        state: enabled
+      when: ansible_facts['os_family'] == "RedHat"
+
+    - name: Reload firewalld
+      service:
+        name: firewalld
+        state: reloaded
+      when: ansible_facts['os_family'] == "RedHat"
+
