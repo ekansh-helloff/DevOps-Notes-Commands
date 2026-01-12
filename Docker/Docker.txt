@@ -265,13 +265,11 @@ Use Cases: Because of this limitation, COPY is best used for including files tha
 Best Practice: If you need to include files from a remote source, it's recommended to download them using curl or wget inside the Dockerfile before using COPY. This gives you more control over the process and helps manage security and image size.
 
 EX-1
+
 FROM alpine:latest
-# Install curl to fetch remote files
-RUN apk add --no-cache curl 
-# Download a file from a remote source
-RUN curl -o /tmp/remote-file.txt https://example.com/remote-file.txt
-# Copy the downloaded file to the final image
-COPY /tmp/remote-file.txt /app/remote-file.txt
+RUN apk add --no-cache curl   -- Install curl to fetch remote files
+RUN curl -o /tmp/remote-file.txt https://example.com/remote-file.txt  -- Download a file from a remote source
+COPY /tmp/remote-file.txt /app/remote-file.txt  --  Copy the downloaded file to the final image
 
 Remote Context of Docker ADD Command
 Supports Remote URLs: The ADD command offers more flexibility by allowing you to specify a remote URL as the source. If you provide a URL, ADD will download the file directly into the Docker image.
@@ -280,8 +278,7 @@ Security Considerations: Although being able to download files directly with ADD
 
 EX-2
 FROM alpine:latest
-# Download a file directly using ADD
-ADD https://example.com/remote-file.txt /app/remote-file.txt
+ADD https://example.com/remote-file.txt /app/remote-file.txt  -- Download a file directly using ADD
 
 **CMD vs Entry point: ** 
 
@@ -417,6 +414,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
