@@ -1,20 +1,16 @@
-A  
-B
-
-_**Why to learn Docker?**_
-
+_**Why to learn Docker?**_  
 A couple of years back, when organizations needed other applications, they buy a server without knowing the performance requirement of the software/application. This results waste of money and resources. Then Virtual machines come onto the market, which allows engineers to run multiple applications on the same resource but as a completely different server. But Every application to run on a Virtual machine requires OS and every OS needs its own CPU, RAM, etc. to run. Which increases the cost.
 Then Docker Model comes into the scope, which overcomes the drawbacks of the Virtual Machine. It reduces the wastage of resources by sharing OS, memory, and CPU, and It offers many benefits for developers and system administrators, like consistency, portability, efficiency, security, scalability, and version control. These benefits make it easier to manage and deploy applications
 
 
-_**Features of Docker**_
+_**Features of Docker**_  
 •	Docker reduces the size of development by providing a smaller part of the OS via containers.
 •	It is easier to work on the same project by different teams with the help of Containers.
 •	Docker containers can be deployed anywhere, on any physical, or virtual machines and on the cloud.
 •	Docker containers are lightweight so, it becomes east to scale them.
 
 
-**_Advantages of Docker_******
+**_Advantages of Docker_******  
 •	Docker uses less memory.
 •	The full operating system is not required to run an application.
 •	Containers run faster than the other Virtual Machines.
@@ -23,7 +19,7 @@ _**Features of Docker**_
 •	To reduce the risks, it uses dependencies.
 
 
-**Disadvantages of Docker**
+**Disadvantages of Docker**  
 •	Complexity will increase due to layering.
 •	It is difficult to manage a large number of containers.
 •	For an application that needs better graphics, Docker is not suitable for it.
@@ -127,65 +123,64 @@ Tmpfs mounts use in-memory storage (RAM) for temporary, non-persistent data (e.g
 
 Tmpfs mounts store data in memory and require the --mount flag (Linux only, not supported with -v). Use docker run -d --name mycontainer --mount type=tmpfs,dst=/app,tmpfs-size=100m nginx:latest to create a 100MB tmpfs mount at /app. Options include tmpfs-mode=0700 for permissions or tmpfs-nocopy to skip copying existing data.
 
-1. Named Volumes
-
-version: "3.9"
-services:
-  db:
-    image: postgres:16
-    container_name: my_postgres
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: mydb
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      
-volumes:
-  db_data:
+1. Named Volumes  
+  
+version: "3.9"  
+services:  
+  db:  
+    image: postgres:16  
+    container_name: my_postgres  
+    environment:  
+      POSTGRES_USER: user  
+      POSTGRES_PASSWORD: pass  
+      POSTGRES_DB: mydb  
+    volumes:  
+      - db_data:/var/lib/postgresql/data  
+        
+volumes:  
+  db_data:  
  
-db_data is a named volume managed by Docker.
+db_data is a named volume managed by Docker.  
 
-The data persists even if the container is removed.
+The data persists even if the container is removed.  
 
-Docker stores it under /var/lib/docker/volumes/db_data/_data.
+Docker stores it under /var/lib/docker/volumes/db_data/_data.  
 
-2. Bind Mounts
-
-version: "3.9"
-
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8080:80"
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
-
-
-./html → local directory on your machine.
-/usr/share/nginx/html → directory inside container.
-:ro makes it read-only.
+2. Bind Mounts  
+  
+version: "3.9"  
+  
+services:  
+  web:  
+    image: nginx:latest  
+    ports:  
+      - "8080:80"  
+    volumes:  
+      - ./html:/usr/share/nginx/html:ro  
 
 
-3. using tmpfs 
+./html → local directory on your machine.  
+/usr/share/nginx/html → directory inside container.  
+:ro makes it read-only.  
 
-version: "3.9"
+  
+3. using tmpfs   
 
-services:
-  app:
-    image: node:20
-    working_dir: /usr/src/app
-    volumes:
-      - app-data:/usr/src/app/data # Named volume (persistent data)
-      - ./src:/usr/src/app         # Bind mount (for dev)
-      - type: tmpfs
-        target: /tmp               # In-memory storage
-    ports:
-      - "3000:3000"
+version: "3.9"  
+services:  
+  app:  
+    image: node:20  
+    working_dir: /usr/src/app  
+    volumes:  
+      - app-data:/usr/src/app/data # Named volume (persistent data)  
+      - ./src:/usr/src/app         # Bind mount (for dev)  
+      - type: tmpfs  
+        target: /tmp               # In-memory storage  
+    ports:  
+      - "3000:3000"  
 
-volumes:
-  app-data
+volumes:  
+  app-data  
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -262,119 +257,119 @@ Talks to registries (pull/push images)
 
 **Docker COPY vs Docker ADD:**
 
-Remote Context of Docker COPY Command
+Remote Context of Docker COPY Command  
 
-Local Context Only: The COPY command is strictly limited to files and directories that are present in your local build context. This means you can only copy files that are located in the directory where you run the docker build command. It doesn’t allow for fetching files from remote URLs.
-Use Cases: Because of this limitation, COPY is best used for including files that are part of your project or configuration files stored locally.
-Best Practice: If you need to include files from a remote source, it's recommended to download them using curl or wget inside the Dockerfile before using COPY. This gives you more control over the process and helps manage security and image size.
+Local Context Only: The COPY command is strictly limited to files and directories that are present in your local build context. This means you can only copy files that are located in the directory where you run the docker build command. It doesn’t allow for fetching files from remote URLs.  
+Use Cases: Because of this limitation, COPY is best used for including files that are part of your project or configuration files stored locally.  
+Best Practice: If you need to include files from a remote source, it's recommended to download them using curl or wget inside the Dockerfile before using COPY. This gives you more control over the process and helps manage security and image size.  
 
-EX-1
+EX-1  
 
-FROM alpine:latest
-RUN apk add --no-cache curl   -- Install curl to fetch remote files
-RUN curl -o /tmp/remote-file.txt https://example.com/remote-file.txt  -- Download a file from a remote source
-COPY /tmp/remote-file.txt /app/remote-file.txt  --  Copy the downloaded file to the final image
+FROM alpine:latest  
+RUN apk add --no-cache curl   -- Install curl to fetch remote files  
+RUN curl -o /tmp/remote-file.txt https://example.com/remote-file.txt  -- Download a file from a remote source  
+COPY /tmp/remote-file.txt /app/remote-file.txt  --  Copy the downloaded file to the final image  
+  
+Remote Context of Docker ADD Command  
 
-Remote Context of Docker ADD Command
+Supports Remote URLs: The ADD command offers more flexibility by allowing you to specify a remote URL as the source. If you provide a URL, ADD will download the file directly into the Docker image.  
+Automatic Extraction: In addition, ADD can automatically unpack compressed files (like .tar or .zip) when they are included in the build context, a feature that COPY does not have.  
+Security Considerations: Although being able to download files directly with ADD is convenient, it also introduces some security risks. Remote files can change or disappear, and there’s a chance of inadvertently including harmful content in your image.  
 
-Supports Remote URLs: The ADD command offers more flexibility by allowing you to specify a remote URL as the source. If you provide a URL, ADD will download the file directly into the Docker image.
-Automatic Extraction: In addition, ADD can automatically unpack compressed files (like .tar or .zip) when they are included in the build context, a feature that COPY does not have.
-Security Considerations: Although being able to download files directly with ADD is convenient, it also introduces some security risks. Remote files can change or disappear, and there’s a chance of inadvertently including harmful content in your image.
+EX-2  
 
-EX-2
+FROM alpine:latest  
+ADD https://example.com/remote-file.txt /app/remote-file.txt  -- Download a file directly using ADD  
 
-FROM alpine:latest
-ADD https://example.com/remote-file.txt /app/remote-file.txt  -- Download a file directly using ADD
+**CMD vs Entry point: **   
 
-**CMD vs Entry point: ** 
+ENTRYPOINT defines the main executable of the container and is not overridden by default, while CMD provides default arguments or commands that can be overridden at runtime. In production, we typically combine ENTRYPOINT with CMD to create flexible yet controlled container behaviour.  
 
-ENTRYPOINT defines the main executable of the container and is not overridden by default, while CMD provides default arguments or commands that can be overridden at runtime. In production, we typically combine ENTRYPOINT with CMD to create flexible yet controlled container behaviour.
+FROM ubuntu  
+CMD ["echo", "Hello World"]  
+docker run myimage  
+--> Hello World  
 
-FROM ubuntu
-CMD ["echo", "Hello World"]
-docker run myimage
---> Hello World
+docker run myimage echo "Hi"  
+--> Hi  
 
-docker run myimage echo "Hi"
---> Hi
+**CMD is easily overridden at runtime.**  
+  
+FROM ubuntu  
+ENTRYPOINT ["echo"]  
+docker run myimage Hello  
+--> Hello  
+**ENTRYPOINT always runs and treats runtime input as arguments.**  
 
-**CMD is easily overridden at runtime.**
+FROM ubuntu  
+ENTRYPOINT ["echo"]  
+CMD ["Hello World"]  
+Behaviors:  
+  
+docker run myimage  
+**Output: Hello World**  
+  
+docker run myimage DevOps  
+**Output: DevOps**  
+  
+**Prod Example:**  
+FROM python:3.11  
+WORKDIR /app  
+COPY app.py .  
+ENTRYPOINT ["python", "app.py"]  
+CMD ["--env=prod"]  
+  
+docker run myapp  
+docker run myapp --env=dev  
+**ENTRYPOINT defines the application, CMD provides environment-specific defaults**  
+  
+What is --entrypoint flag in Docker?  
+  
+--entrypoint is used to override the ENTRYPOINT defined in a Dockerfile at runtime.  
+  
+ENTRYPOINT cannot be overridden   
+CMD can be overridden & But sometimes (debugging, troubleshooting), we must bypass ENTRYPOINT.  
+  
+docker run --entrypoint /bin/bash myimage  
+  
+docker network \& types:  
+Now container starts with  
+bash shell  
 
-FROM ubuntu
-ENTRYPOINT ["echo"]
-docker run myimage Hello
---> Hello
-**ENTRYPOINT always runs and treats runtime input as arguments.**
+📌 Real-world use  
 
-FROM ubuntu
-ENTRYPOINT ["echo"]
-CMD ["Hello World"]
-Behaviors:
+Debug container  
+Inspect filesystem  
+Run emergency commands  
 
-docker run myimage
-**Output: Hello World**
+##Kubernetes sends SIGTERM to containers during:  
 
-docker run myimage DevOps
-**Output: DevOps**
+Pod termination  
+Rolling updates  
+  
+📌 If shell form is used:  
+App may not stop properly  
+Leads to crash loops  
+  
+📌 Exec form handles this cleanly.  
+  
+Explain how to isolate networks b/w containers:  
 
-**Prod Example:**
-FROM python:3.11
-WORKDIR /app
-COPY app.py .
-ENTRYPOINT ["python", "app.py"]
-CMD ["--env=prod"]
-
-docker run myapp
-docker run myapp --env=dev
-**ENTRYPOINT defines the application, CMD provides environment-specific defaults**
-
-What is --entrypoint flag in Docker?
-
---entrypoint is used to override the ENTRYPOINT defined in a Dockerfile at runtime.
-
-ENTRYPOINT cannot be overridden 
-CMD can be overridden & But sometimes (debugging, troubleshooting), we must bypass ENTRYPOINT.
-
-docker run --entrypoint /bin/bash myimage
-
-docker network \& types:
-Now container starts with
-bash shell
-
-📌 Real-world use
-
-Debug container
-Inspect filesystem
-Run emergency commands
-
-##Kubernetes sends SIGTERM to containers during:
-
-Pod termination
-Rolling updates
-
-📌 If shell form is used:
-App may not stop properly
-Leads to crash loops
-
-📌 Exec form handles this cleanly.
-
-Explain how to isolate networks b/w containers:
-
-Container network isolation ensures that a single compromised service cannot turn into a full system breach by eliminating unintended communication paths.
-Network isolation between containers means ensuring that only explicitly allowed services can communicate, while everything else is blocked by default.
-The goal is to prevent lateral movement, reduce blast radius, and enforce least-privilege networking.
-
-**Docker Networking.**
-
-Docker networking is the system that enables containers to communicate with each other, the host, and external networks. It defines how data moves between containers and across systems during containerized application execution.
-
-It provides isolated, flexible network environments using built-in drivers like bridge, host, overlay, and none. Each driver supports different use cases, such as local development, swarm-based orchestration, or integration with legacy infrastructure. 
-
-Docker supports six network types to manage container communication that implement core networking functionality:
-
+Container network isolation ensures that a single compromised service cannot turn into a full system breach by eliminating unintended communication paths.  
+Network isolation between containers means ensuring that only explicitly allowed services can communicate, while everything else is blocked by default.  
+The goal is to prevent lateral movement, reduce blast radius, and enforce least-privilege networking.  
+  
+**Docker Networking.**  
+  
+Docker networking is the system that enables containers to communicate with each other, the host, and external networks. It defines how data moves between containers and across systems during containerized application execution.  
+  
+It provides isolated, flexible network environments using built-in drivers like bridge, host, overlay, and none. Each driver supports different use cases, such as local development, swarm-based orchestration, or integration with legacy infrastructure.   
+  
+Docker supports six network types to manage container communication that implement core networking functionality:  
+  
 <img width="665" height="814" alt="image" src="https://github.com/user-attachments/assets/bb4fb84b-7365-4749-a243-21e4ae8500a7" />
 
-
+  
 Distroless images in container:
 
 
@@ -420,6 +415,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
