@@ -1,3 +1,6 @@
+A  
+B
+
 _**Why to learn Docker?**_
 
 A couple of years back, when organizations needed other applications, they buy a server without knowing the performance requirement of the software/application. This results waste of money and resources. Then Virtual machines come onto the market, which allows engineers to run multiple applications on the same resource but as a completely different server. But Every application to run on a Virtual machine requires OS and every OS needs its own CPU, RAM, etc. to run. Which increases the cost.
@@ -260,6 +263,7 @@ Talks to registries (pull/push images)
 **Docker COPY vs Docker ADD:**
 
 Remote Context of Docker COPY Command
+
 Local Context Only: The COPY command is strictly limited to files and directories that are present in your local build context. This means you can only copy files that are located in the directory where you run the docker build command. It doesn’t allow for fetching files from remote URLs.
 Use Cases: Because of this limitation, COPY is best used for including files that are part of your project or configuration files stored locally.
 Best Practice: If you need to include files from a remote source, it's recommended to download them using curl or wget inside the Dockerfile before using COPY. This gives you more control over the process and helps manage security and image size.
@@ -272,11 +276,13 @@ RUN curl -o /tmp/remote-file.txt https://example.com/remote-file.txt  -- Downloa
 COPY /tmp/remote-file.txt /app/remote-file.txt  --  Copy the downloaded file to the final image
 
 Remote Context of Docker ADD Command
+
 Supports Remote URLs: The ADD command offers more flexibility by allowing you to specify a remote URL as the source. If you provide a URL, ADD will download the file directly into the Docker image.
 Automatic Extraction: In addition, ADD can automatically unpack compressed files (like .tar or .zip) when they are included in the build context, a feature that COPY does not have.
 Security Considerations: Although being able to download files directly with ADD is convenient, it also introduces some security risks. Remote files can change or disappear, and there’s a chance of inadvertently including harmful content in your image.
 
 EX-2
+
 FROM alpine:latest
 ADD https://example.com/remote-file.txt /app/remote-file.txt  -- Download a file directly using ADD
 
@@ -414,6 +420,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
