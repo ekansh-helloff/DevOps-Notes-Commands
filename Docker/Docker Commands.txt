@@ -40,4 +40,12 @@ exit 1
 EOF  
 ENTRYPOINT /start.sh  
   
-5. 
+5. docker run -it ubuntu:24.04 /bin/bash
+6. docker run -it -m 300M --memory-swap -1 ubuntu:24.04 /bin/bash     -- We set memory limit and disabled swap memory limit, this means the processes in the container can use 300M memory and as much swap memory as they need (if the host supports swap memory).
+7. docker run -it -m 300M ubuntu:24.04 /bin/bash     --We set memory limit only, this means the processes in the container can use 300M memory and 300M swap memory, by default, the total virtual memory size (--memory-swap) will be set as double of memory, in this case, memory + swap would be 2*300M, so processes can use 300M swap memory as well.
+8. docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash --docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash
+9. docker run -it --cpuset-cpus="0-2" ubuntu:24.04 /bin/bash  -- This means processes in container can be executed on cpu 0, cpu 1 and cpu 2.
+10. docker run --rm --group-add audio --group-add nogroup --group-add 777 busybox id   ## --group-add: Add additional groups to run as
+
+uid=0(root) gid=0(root) groups=10(wheel),29(audio),99(nogroup),777
+11. 
