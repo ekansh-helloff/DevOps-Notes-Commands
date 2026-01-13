@@ -48,4 +48,18 @@ ENTRYPOINT /start.sh
 10. docker run --rm --group-add audio --group-add nogroup --group-add 777 busybox id   ## --group-add: Add additional groups to run as
 
 uid=0(root) gid=0(root) groups=10(wheel),29(audio),99(nogroup),777
-11. 
+11.  docker run --name=test -d \
+    --health-cmd='stat /etc/passwd || exit 1' \
+    --health-interval=2s \
+    busybox sleep 1d
+
+12. sleep 2; docker inspect --format='{{.State.Health.Status}}' test
+healthy
+13. docker exec test rm /etc/passwd
+14. sleep 2; docker inspect --format='{{json .State.Health}}' test
+
+============================================================================================================================
+
+15. 
+
+
