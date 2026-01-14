@@ -91,11 +91,10 @@ Variable bashstr Initialization:
 bash
 bashstr="   hello world   "
 bashstr contains the string " hello world " with leading and trailing spaces.
-
+=====================================
 Using echo -e "${bashstr}"
 
 echo -e prints the value of bashstr, interpreting any escape sequences (-e not crucial here).
-
 The output passed to sed is: hello world (with spaces unchanged).
 
 sed Commands:
@@ -168,5 +167,9 @@ Uppercase (bash): HELLO DEVOPS
 ✅ Recommended way (if bash ≥ 4.0):
 
 ${str^^} → uppercase
-
 ${str,,} → lowercase
+
+##
+echo "Hi how this prod got down" | awk -F, '{print $1}' csvtest.csv     -- -F, denotes to consider the files seperation with , commma
+
+### SED ###
