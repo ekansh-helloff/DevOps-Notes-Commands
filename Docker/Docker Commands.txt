@@ -70,10 +70,43 @@ docker network create my-net
 docker run -d --name web --network my-net nginx:alpine
 docker run --rm -it --network my-net busybox
 
-mount bind 
-
  docker run --foo busybox; echo $?   ## Exit code 125 indicates that the error is with Docker daemon itself., Exit code 126 indicates that the specified contained command can't be invoked. The container command in the following example is: /etc., Exit code 127 indicates that the contained command can't be found.
 
  docker run busybox /bin/sh -c 'exit 3'
  echo $?                                                ## Any exit code other than 125, 126, and 127 represent the exit code of the provided container command.
-3
+--------------------------------------------------------------------------------------------------------------------
+NETWORKING
+
+$ docker network create demo-network -d bridge
+$ docker run -it --rm --name container1 --network demo-network busybox:latest
+$ docker network connect demo-network container2
+$ docker run -d --name nginx --network host nginx:latest
+$ docker run -it --rm --network none busybox:latest
+$ docker network disconnect demo-network container2   ##Remove network from container
+$ docker network ls
+
+NETWORK ID     NAME           DRIVER    SCOPE
+44edcc537a6f   bridge         bridge    local
+2cf9f8f370ad   demo-network   bridge    local
+4d60b27f787a   host           host      local
+288376a0a4f8   none           null      local
+
+$ docker network rm demo-network
+$ docker network prune  ## You can automatically delete all unused networks using the network prune command.
+
+Example ---
+
+version: "3"
+services:
+  app:
+    image: php:7.2-apache
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD=changeme
+
+$ docker compose up -d
+
+
+
+
