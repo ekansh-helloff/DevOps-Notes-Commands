@@ -1,0 +1,4 @@
+1  ssh -i azureagent_key.pem azureuser@13.71.34.32
+2  wget https://vstsagentpackage.azureedge.net/agent/3.236.1/vsts-agent-linux-x64-3.236.1.tar.gz
+3  ./config.sh
+4  ./run.sh -- To make agent online
