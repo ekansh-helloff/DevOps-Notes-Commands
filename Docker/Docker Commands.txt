@@ -8,7 +8,7 @@ a5ff32e2b551   acme/my-final-image:1.0   my_container_2   5B (virtual 7.75MB)
 40ebdd763416   acme/my-final-image:1.0   my_container_1   5B (virtual 7.75MB)  
 
 2. docker run -dit --name my_container_1 acme/my-final-image:1.0 bash \  
-
+2.1 sudo systemctl status docker
 3. docker info  
 
 4.  docker run -d --restart unless-stopped redis  
@@ -57,6 +57,10 @@ uid=0(root) gid=0(root) groups=10(wheel),29(audio),99(nogroup),777
 healthy
 13. docker exec test rm /etc/passwd
 14. sleep 2; docker inspect --format='{{json .State.Health}}' test
+
+docker exec -it container-name bash
+echo "<h1>Hello from Docker Volume!</h1>" > /usr/share/nginx/html/index.html 
+exit
 
 ============================================================================================================================
 docker run -d nginx
@@ -107,6 +111,17 @@ services:
 
 $ docker compose up -d
 
+docker compose up -d           # Start services
+docker compose down            # Stop and remove containers
+docker compose down -v         # Remove containers + volumes
+docker volume ls               # List all volumes
+docker volume inspect db_data  # Inspect a specific volume
 
 
+======================================================================================
 
+docker volume create mydata
+docker run -d -v mydata:/app/data nginx
+docker run -d -v /home/user/website:/usr/share/nginx/html nginx
+docker run -d  --name mynginx2  -p 8081:80  -v mydata:/usr/share/nginx/html  nginx
+docker inspect container1
