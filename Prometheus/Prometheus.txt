@@ -1,1 +1,2 @@
 pgreo prometheus //to get the processing running in background.
+kill processid   //kill 3421
