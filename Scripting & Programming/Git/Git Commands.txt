@@ -3,6 +3,7 @@ echo "# DevOps_Commands" >> README.md
 git init
 git add README.md
 git add .
+git rm --cached <fille1>.. #To unstage the file after git add .
 git commit -m "first commit"      
 git branch -M main master                #git branch -m old new Rename (fails if name already exists),  #git branch -M old new Force rename (even if name exists)     
 git remote add origin https://github.com/ekansh-helloff/DevOps_Commands.git
