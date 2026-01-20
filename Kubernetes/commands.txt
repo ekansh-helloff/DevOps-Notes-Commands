@@ -1,12 +1,10 @@
 1.  If vm-driver is set in the global config, please run "minikube config unset vm-driver" to resolve this warning.
-
 2. This computer is running Hyper-V. VirtualBox won't boot a 64bits VM when Hyper-V is activated. Either use Hyper-V as a driver, or disable the Hyper-V hypervisor. (To skip this check, use --virtualbox-no-vtx-check)
-
 3. VirtualBox and Hyper-V are having a conflict. Use '--driver=hyperv' or disable Hyper-V using: 'bcdedit /set hypervisorlaunchtype off'
 
 4. Pod creation file:
 
-   apiVersion: v1
+apiVersion: v1
 kind: Pod
 metadata:
   name: postgres
@@ -93,7 +91,7 @@ spec:
     matchLabels:
       tier: backend
 
-7. Service file creation for depolyment:
+7. Service file creation for deployment:
 
 
 apiVersion: v1
@@ -110,9 +108,7 @@ spec:
   selector:
     app: myapp
 
-
     OR
-
 
 apiVersion: v1
 kind: Service
@@ -127,3 +123,6 @@ spec:
       targetPort: 8080
   selector:
     tier: backend 
+
+====================================================================================================================================================================================
+
