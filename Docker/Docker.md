@@ -193,7 +193,7 @@ Docker is an open-source containerization platform that helps package an applica
 
 Containers share the host OS kernel, making them much faster and more efficient than virtual machines.
 
-With Docker, we can ensure the application runs exactly the same in dev, test, and production.
+With Docker, we can ensure the application runs as exactly the same in dev, test, and production.
 
 
 
@@ -214,7 +214,7 @@ We then pushed the image to Azure Container Registry and deployed it to Kubernet
 **Docker life cycle:**  
 
 The Docker life cycle describes the complete journey of a containerized application — from building an image, running it as a container, managing its state, and finally stopping or removing it.
-At Docker level, the container lifecycle is usually described with five main states: created, running, paused, stopped/exited, and removed/deleted. These states are driven by common Docker CLI. It starts with building an immutable image, pushing it to a registry, running it as a container, managing its runtime state, and finally stopping and removing it. In enterprise DevOps, this lifecycle is automated through CI/CD pipelines and orchestration tools like Kubernetes to ensure scalability, reliability, and consistency.
+At the Docker level, the container lifecycle is usually described with five main states: created, running, paused, stopped/exited, and removed/deleted. These states are driven by common Docker CLI. It starts with building an immutable image, pushing it to a registry, running it as a container, managing its runtime state, and finally stopping and removing it. In enterprise DevOps, this lifecycle is automated through CI/CD pipelines and orchestration tools like Kubernetes to ensure scalability, reliability, and consistency.
 
 **Docker components:**
 
@@ -415,6 +415,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
