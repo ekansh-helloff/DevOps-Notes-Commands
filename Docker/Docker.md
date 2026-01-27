@@ -378,19 +378,19 @@ Distroless images:
 ❌ No package manager  
 ❌ No OS utilities  
 ✅ Only runtime + app  
-✅ Tight security
+✅ Tight security  
 
 “In high-security production environments, I use Distroless images.  
 I install dependencies in a builder image and copy only the application and runtime dependencies into a Distroless base, which contains no shell or package manager. This significantly reduces the attack surface and ensures the container runs as a non-root user by default.”  
 
 
-**Mutli-stage build in docker:  **
+**Mutli-stage build in docker:  **  
 
 A production-level Dockerfile focuses on security, performance, reproducibility, and minimal attack surface — not just making the app run.  
 
-Standardized base images:
+Standardized base images:  
 
-Python → python:3.x-slim  
+Python → python:3.x-slim    
 Java → jre-slim  
 High-security → distroless  
 
@@ -401,21 +401,21 @@ Alpine → adduser, addgroup
 Debian/Ubuntu → useradd, groupadd  
 **Some Distroless image and slim image--**
 
-Distolress Images-
-FROM gcr.io/distroless/java17-debian12
-FROM gcr.io/distroless/python3-debian12
-FROM gcr.io/distroless/nodejs20-debian12
-FROM gcr.io/distroless/dotnet/aspnet:8.0
+Distolress Images-  
+FROM gcr.io/distroless/java17-debian12  
+FROM gcr.io/distroless/python3-debian12  
+FROM gcr.io/distroless/nodejs20-debian12  
+FROM gcr.io/distroless/dotnet/aspnet:8.0  
+  
+  
+Slim images-  
+FROM eclipse-temurin:17-jre-jammy  
+FROM openjdk:17-jre-slim  
+FROM python:3.11-slim  
+FROM node:20-slim  
+FROM mcr.microsoft.com/dotnet/aspnet:8.0  
 
-
-Slim images-
-FROM eclipse-temurin:17-jre-jammy
-FROM openjdk:17-jre-slim
-FROM python:3.11-slim
-FROM node:20-slim
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
-
-“Base image selection depends on runtime compatibility and security.
+“Base image selection depends on runtime compatibility and security.  
 For most production workloads, I prefer slim or distroless images because they balance security, stability, and operational support.  
 Alpine is used selectively, mainly for Go or static binaries, but avoided for Java, Python, and .NET due to compatibility risks.”  
 “Distroless is not mandatory. In real production, we choose between **slim, distroless, or alpine** based on security requirements, runtime compatibility, and operational maturity.  
@@ -423,10 +423,17 @@ Alpine is used selectively, mainly for Go or static binaries, but avoided for Ja
   
 “The best Docker image is not the smallest one — it’s the one that fails the least in production.”
 
-===============================================================================================================================================  
-**Real time challenges: ** 
+| Image      | Size       | Shell | libc  | Debug      | Use Case     |
+| ---------- | ---------- | ----- | ----- | ---------- | ------------ |
+| Slim       | Medium     | ✅     | glibc | Easy       | Default prod |   Works with almost all precompiled binaries, glibc is the default and safest libc for most production workloads
+| Distroless | Small      | ❌     | glibc | Hard       | Secure prod  |    No shell, No package manager
+| Alpine     | Very Small | ✅     | musl  | Tricky     | Selective    |    Alpine uses musl libc, which is smaller but can cause runtime issues with native dependencies.
+| Scratch    | Tiny       | ❌     | None  | Impossible | Static only  |  No libc at all, Binary is fully static, 
 
-#Docker is a single daemon process. Which can cause a single point of failure, If the Docker Daemon goes down for some reason all the applications are down.
+===============================================================================================================================================  
+**Real-time challenges: ** 
+
+#Docker is a single daemon process. Which can cause a single point of failure, If the Docker Daemon goes down for some of reason all the applications are down.
 #Docker Daemon runs as a root user. Which is a security threat. Any process running as a root can have adverse effects. When it is comprised for security reasons, it can impact other applications or containers on the host.
 #Resource Constraints: If you're running too many containers on a single host, you may experience issues with resource constraints. This can result in slow performance or crashes.
 
@@ -457,6 +464,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
