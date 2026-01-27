@@ -370,19 +370,61 @@ Docker supports six network types to manage container communication that impleme
 <img width="665" height="814" alt="image" src="https://github.com/user-attachments/assets/bb4fb84b-7365-4749-a243-21e4ae8500a7" />
 
   
-Distroless images in container:
+**Distroless images in Container: ** 
+
+Distroless images:  
+
+❌ No shell  
+❌ No package manager  
+❌ No OS utilities  
+✅ Only runtime + app  
+✅ Tight security
+
+“In high-security production environments, I use Distroless images.  
+I install dependencies in a builder image and copy only the application and runtime dependencies into a Distroless base, which contains no shell or package manager. This significantly reduces the attack surface and ensures the container runs as a non-root user by default.”  
 
 
+**Mutli-stage build in docker:  **
 
-Mutli-stage build in docker:
+A production-level Dockerfile focuses on security, performance, reproducibility, and minimal attack surface — not just making the app run.  
+
+Standardized base images:
+
+Python → python:3.x-slim  
+Java → jre-slim  
+High-security → distroless  
+
+Alpine allowed only for Go & static binaries  
 
 
+Alpine → adduser, addgroup  
+Debian/Ubuntu → useradd, groupadd  
+**Some Distroless image and slim image--**
+
+Distolress Images-
+FROM gcr.io/distroless/java17-debian12
+FROM gcr.io/distroless/python3-debian12
+FROM gcr.io/distroless/nodejs20-debian12
+FROM gcr.io/distroless/dotnet/aspnet:8.0
 
 
+Slim images-
+FROM eclipse-temurin:17-jre-jammy
+FROM openjdk:17-jre-slim
+FROM python:3.11-slim
+FROM node:20-slim
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
+“Base image selection depends on runtime compatibility and security.
+For most production workloads, I prefer slim or distroless images because they balance security, stability, and operational support.  
+Alpine is used selectively, mainly for Go or static binaries, but avoided for Java, Python, and .NET due to compatibility risks.”  
+“Distroless is not mandatory. In real production, we choose between **slim, distroless, or alpine** based on security requirements, runtime compatibility, and operational maturity.  
+**Slim** images are the most commonly used, while **distroless** is adopted when security hardening is a priority.”  
+  
+“The best Docker image is not the smallest one — it’s the one that fails the least in production.”
 
-
-Real time challenges:
+===============================================================================================================================================  
+**Real time challenges: ** 
 
 #Docker is a single daemon process. Which can cause a single point of failure, If the Docker Daemon goes down for some reason all the applications are down.
 #Docker Daemon runs as a root user. Which is a security threat. Any process running as a root can have adverse effects. When it is comprised for security reasons, it can impact other applications or containers on the host.
@@ -415,6 +457,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
