@@ -425,10 +425,10 @@ Alpine is used selectively, mainly for Go or static binaries, but avoided for Ja
 
 | Image      | Size       | Shell | libc  | Debug      | Use Case     |
 | ---------- | ---------- | ----- | ----- | ---------- | ------------ |
-| Slim       | Medium     | ✅     | glibc | Easy       | Default prod |   Works with almost all precompiled binaries, glibc is the default and safest libc for most production workloads
-| Distroless | Small      | ❌     | glibc | Hard       | Secure prod  |    No shell, No package manager
-| Alpine     | Very Small | ✅     | musl  | Tricky     | Selective    |    Alpine uses musl libc, which is smaller but can cause runtime issues with native dependencies.
-| Scratch    | Tiny       | ❌     | None  | Impossible | Static only  |  No libc at all, Binary is fully static, 
+| Slim       | Medium     | ✅     | glibc | Easy       | Default prod | -Works with almost all precompiled binaries, glibc is the default and safest libc for most production workloads  
+| Distroless | Small      | ❌     | glibc | Hard       | Secure prod  | -No shell, No package manager  
+| Alpine     | Very Small | ✅     | musl  | Tricky     | Selective    |   -Alpine uses musl libc, which is smaller but can cause runtime issues with native dependencies.  
+| Scratch    | Tiny       | ❌     | None  | Impossible | Static only  |  -No libc at all, Binary is fully static,   
 
 ===============================================================================================================================================  
 **Real-time challenges: ** 
@@ -464,6 +464,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
