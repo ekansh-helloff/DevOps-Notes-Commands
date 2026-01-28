@@ -455,7 +455,7 @@ Regularly scan images, update dependencies, and rotate secrets.
 
 Docker Compose:
 
-
+Docker Compose is used to define and run multi-container applications using a single YAML file. It automatically creates a shared network, manages dependencies, and simplifies local development.
 
 
 
@@ -468,6 +468,7 @@ Docker Compose:
 
 
 Docker Model Runner: 
+
 
 
 
