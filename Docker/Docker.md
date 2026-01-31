@@ -442,24 +442,25 @@ Alpine is used selectively, mainly for Go or static binaries, but avoided for Ja
 #Resource Constraints: If you're running too many containers on a single host, you may experience issues with resource constraints. This can result in slow performance or crashes.
 
 **How to secure Docker networking?**
+  
 To secure Docker networking:
 
-Use user-defined networks to segment services.
-Limit published ports to only what is required.
-Run containers as non-root users and apply --cap-drop to remove unnecessary capabilities.
-Separate frontend and backend networks for better isolation.
-Use mTLS for encrypted service-to-service communication.
-Consider macvlan networks for strict isolation from the host and other containers.
-Regularly scan images, update dependencies, and rotate secrets.
+Use user-defined networks to segment services.  
+Limit published ports to only what is required.  
+Run containers as non-root users and apply --cap-drop to remove unnecessary capabilities.  
+Separate frontend and backend networks for better isolation.  
+Use mTLS for encrypted service-to-service communication.  
+Consider macvlan networks for strict isolation from the host and other containers.  
+Regularly scan images, update dependencies, and rotate secrets.  
+  
+  
+Docker Compose:  
+
+Docker Compose is used to define and run multi-container applications using a single YAML file. It automatically creates a shared network, manages dependencies, and simplifies local development.  
 
 
-Docker Compose:
 
-Docker Compose is used to define and run multi-container applications using a single YAML file. It automatically creates a shared network, manages dependencies, and simplifies local development.
-
-
-
--> BuildKit is an open-source project and Docker's new builder, designed to enable advanced build features, including multi-architecture builds (30:53). It significantly improves upon the legacy Docker builder, which did not support multi-platform builds natively (29:54).
+-> BuildKit is an open-source project and Docker's new builder, designed to enable advanced build features, including multi-architecture builds (30:53). It significantly improves upon the legacy Docker builder, which did not support multi-platform builds natively (29:54).  
 
 
 
@@ -468,6 +469,7 @@ Docker Compose is used to define and run multi-container applications using a si
 
 
 Docker Model Runner: 
+
 
 
 
