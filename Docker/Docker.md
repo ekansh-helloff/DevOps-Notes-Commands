@@ -459,16 +459,30 @@ Docker Compose:
 Docker Compose is used to define and run multi-container applications using a single YAML file. It automatically creates a shared network, manages dependencies, and simplifies local development.  
 
 
-
 -> BuildKit is an open-source project and Docker's new builder, designed to enable advanced build features, including multi-architecture builds (30:53). It significantly improves upon the legacy Docker builder, which did not support multi-platform builds natively (29:54).  
 
+version: "3.9"  
+  
+services:  
+  app:  
+    image: python:3.11-slim  
+    container_name: myapp  
+    ports:  
+      - "8000:8000"  
+    volumes:  
+      - .:/app  
+    command: python app.py  
+  
+  db:  
+    image: postgres:15  
+    environment:  
+      POSTGRES_USER: admin  
+      POSTGRES_PASSWORD: secret  
 
-
--------------------------------------------------------------------
-
-
+-------------------------------------------------------------------  
 
 Docker Model Runner: 
+
 
 
 
