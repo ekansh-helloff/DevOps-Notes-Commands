@@ -42,8 +42,12 @@ ENTRYPOINT /start.sh
   
 5. docker run -it ubuntu:24.04 /bin/bash
 6. docker run -it -m 300M --memory-swap -1 ubuntu:24.04 /bin/bash     -- We set memory limit and disabled swap memory limit, this means the processes in the container can use 300M memory and as much swap memory as they need (if the host supports swap memory).
+
 7. docker run -it -m 300M ubuntu:24.04 /bin/bash     --We set memory limit only, this means the processes in the container can use 300M memory and 300M swap memory, by default, the total virtual memory size (--memory-swap) will be set as double of memory, in this case, memory + swap would be 2*300M, so processes can use 300M swap memory as well.
+
 8. docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash
+8.1   docker update --cpus=1 app              ## Apply CPUlimits
+
 9. docker run -it --cpuset-cpus="0-2" ubuntu:24.04 /bin/bash  -- This means processes in container can be executed on cpu 0, cpu 1 and cpu 2.
 10. docker run --rm --group-add audio --group-add nogroup --group-add 777 busybox id   ## --group-add: Add additional groups to run as
 
@@ -130,8 +134,8 @@ docker exec -it --privileged                                         #Gives full
 docker update --cpus=2 --memory=1g app                        #Dynamically change CPU/memory limits without restart.
 docker wait                                                        #Blocks until container exits → helpful in CI scripts
 docker network create --driver=bridge --subnet=10.10.0.0/24 \
---gateway=10.10.0.1 \                          #I create custom networks with fixed subnets to isolate workloads, assign policies, and avoid IP conflicts in multi-stack environments. 
-custom-net
+--gateway=10.10.0.1 custom-net                    #I create custom networks with fixed subnets to isolate workloads, assign policies, and avoid IP conflicts in multi-stack environments. 
+
 docker network connect backend app1                #Attach/detach container from multiple networks.
 docker run --network=none                #Fully isolate a container (zero connectivity).
 docker stats                                #Live CPU/memory/network/blkio monitoring.
@@ -190,7 +194,7 @@ docker inspect returns all metadata about a container or image.
 
 docker inspect returns all metadata about a container or image.
 
-$$ docker inspect --format='{{.State.ExitCode}}' payment-service
+🔥 docker inspect --format='{{.State.ExitCode}}' payment-service
 I use docker inspect --format '{{.State.ExitCode}}' to quickly diagnose why a container stopped — especially useful for detecting OOM kills, segmentation faults, or lifecycle issues
 
 Exit Code	Meaning
@@ -201,7 +205,7 @@ Exit Code	Meaning
 139	Segmentation fault
 126/127	Command not found or permission issues
 
-$$ docker inspect --format='{{.HostConfig.Memory}}' my-app
+🔥 docker inspect --format='{{.HostConfig.Memory}}' my-app
 If output is: 0
 ➡️ It means no memory limit applied (dangerous for production). This command helps me verify whether the container has proper memory limits.
 If memory = 0, the container can consume all system RAM and cause node crashes.
@@ -210,7 +214,7 @@ To confirm memory limits in production
 To check if autoscaling policies are correct
 To ensure developers didn't push an image with wrong resource configs
 
-$$ docker inspect --format='{{json .Mounts}}' web-app | jq
+🔥 docker inspect --format='{{json .Mounts}}' web-app | jq
 
 This covers:
 
@@ -228,7 +232,36 @@ Ensuring logs are mounted to external storage
 Auditing what data is persistent vs ephemeral
 Checking file-permission issues caused by incorrect bind mounts
 
-$$ docker inspect --format='{{.NetworkSettings.IPAddress}}'
+🔥 docker inspect --format='{{.NetworkSettings.IPAddress}}'
 
 gives the container’s internal network IP. It’s extremely useful when debugging microservice connectivity issues, verifying DNS resolution, or inspecting network isolation.
 For custom bridge networks, I use {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} to handle multi-network setups.”
+
+🔥 docker inspect --format '{{.Config.Env}}' → show only env vars
+🔥 docker inspect --format '{{json .Config.Labels}}' → show labels
+🔥 docker inspect --format '{{.HostConfig.PortBindings}}' → show port mapping
+
+🔥🔥 How do you secure containers in production?”
+
+Answer:
+
+Drop privileges
+--cap-drop ALL
+
+Run as non-root
+--user 1001:1001
+
+Immutable FS
+--read-only
+
+Use distroless or slim images
+
+Scan using
+docker scan <image>
+
+Enable Docker Content Trust
+DOCKER_CONTENT_TRUST=1
+
+Encrypt secrets using Vaults.
+
+🔥🔥 
