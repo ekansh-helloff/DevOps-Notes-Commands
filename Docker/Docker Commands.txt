@@ -8,7 +8,7 @@ a5ff32e2b551   acme/my-final-image:1.0   my_container_2   5B (virtual 7.75MB)
 40ebdd763416   acme/my-final-image:1.0   my_container_1   5B (virtual 7.75MB)  
 
 2. docker run -dit --name my_container_1 acme/my-final-image:1.0 bash \  
-2.1 sudo systemctl status docker
+2.1     sudo systemctl status docker
 3. docker info  
 
 4.  docker run -d --restart unless-stopped redis  
@@ -43,7 +43,7 @@ ENTRYPOINT /start.sh
 5. docker run -it ubuntu:24.04 /bin/bash
 6. docker run -it -m 300M --memory-swap -1 ubuntu:24.04 /bin/bash     -- We set memory limit and disabled swap memory limit, this means the processes in the container can use 300M memory and as much swap memory as they need (if the host supports swap memory).
 7. docker run -it -m 300M ubuntu:24.04 /bin/bash     --We set memory limit only, this means the processes in the container can use 300M memory and 300M swap memory, by default, the total virtual memory size (--memory-swap) will be set as double of memory, in this case, memory + swap would be 2*300M, so processes can use 300M swap memory as well.
-8. docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash --docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash
+8. docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash
 9. docker run -it --cpuset-cpus="0-2" ubuntu:24.04 /bin/bash  -- This means processes in container can be executed on cpu 0, cpu 1 and cpu 2.
 10. docker run --rm --group-add audio --group-add nogroup --group-add 777 busybox id   ## --group-add: Add additional groups to run as
 
@@ -116,12 +116,119 @@ docker compose down            # Stop and remove containers
 docker compose down -v         # Remove containers + volumes
 docker volume ls               # List all volumes
 docker volume inspect db_data  # Inspect a specific volume
-
-
 ======================================================================================
-
 docker volume create mydata
 docker run -d -v mydata:/app/data nginx
 docker run -d -v /home/user/website:/usr/share/nginx/html nginx
 docker run -d  --name mynginx2  -p 8081:80  -v mydata:/usr/share/nginx/html  nginx
 docker inspect container1
+====================================================================================
+
+docker run --mount type=bind,src=/logs,dst=/app/logs app:v1    #Instead of -v, I prefer --mount because it's explicit, supports bind/volume/tmpfs, and avoids ambiguous volume creation.
+docker run --cap-drop=ALL --cap-add=NET_ADMIN vpn-proxy
+docker exec -it --privileged                                         #Gives full root capabilities (rare but needed for debugging kernel-level issues).
+docker update --cpus=2 --memory=1g app                        #Dynamically change CPU/memory limits without restart.
+docker wait                                                        #Blocks until container exits → helpful in CI scripts
+docker network create --driver=bridge --subnet=10.10.0.0/24 \
+--gateway=10.10.0.1 \                          #I create custom networks with fixed subnets to isolate workloads, assign policies, and avoid IP conflicts in multi-stack environments. 
+custom-net
+docker network connect backend app1                #Attach/detach container from multiple networks.
+docker run --network=none                #Fully isolate a container (zero connectivity).
+docker stats                                #Live CPU/memory/network/blkio monitoring.
+docker run --cpuset-cpus="0,3" app                #Pin container to specific CPU cores.
+docker run --memory-swappiness                        #Controls how aggressively the kernel swaps the container.
+docker run --memory-reservation                      #Soft memory limit (QoS).
+docker scan myapp:latest                                #cans images for CVEs.
+docker run --read-only -v /tmp app                        Mount root filesystem as read-only:
+docker run --user 1001:1001                        #Avoid root-in-container anti-pattern.
+export DOCKER_CONTENT_TRUST=1                        #Signing images using Docker Content Trust.
+
+docker volume create \
+  --driver local \
+  --opt type=tmpfs \
+  --opt device=tmpfs \
+  cache
+
+docker inspect app --format '{{.NetworkSettings.IPAddress}}'
+docker system prune -a --volumes    #Cleanup unused images/volumes.
+docker history app:latest                        #docker image history
+docker image prune --filter     #Cleanup dangling layers without deleting everything.
+docker logs -f --tail 300 app
+docker cp                #Copy files into/out of a running container — useful in emergencies.
+docker events                #Listen to real-time Docker Engine events.
+docker top                #See container-level processes
+
+
+
+Scenario-Based Docker Q&A
+
+
+"Your containers keep restarting in production. How do you diagnose?"
+
+Answer
+
+I first check restart reasons using:
+docker ps -a --filter "status=exited"
+and
+docker logs <container>
+
+Then I run:
+
+docker inspect --format='{{.State.OOMKilled}}' <container>
+
+to confirm if it’s an OOM kill. If needed, I reproduce locally:
+docker run --memory=500m --memory-swap=500m app
+
+Finally, I set proper memory reservation, limits, healthchecks and fail-fast logging.
+
+
+docker inspect returns all metadata about a container or image.
+| Output  | Meaning                                                                |
+| ------- | ---------------------------------------------------------------------- |
+| `true`  | Container was killed by the kernel OOM killer (memory limit exceeded). |
+| `false` | Container exited normally, not due to OOM.                             |
+
+docker inspect returns all metadata about a container or image.
+
+$$ docker inspect --format='{{.State.ExitCode}}' payment-service
+I use docker inspect --format '{{.State.ExitCode}}' to quickly diagnose why a container stopped — especially useful for detecting OOM kills, segmentation faults, or lifecycle issues
+
+Exit Code	Meaning
+0	Clean graceful shutdown
+1	Application error
+137	Killed (SIGKILL) — usually OOM kill
+143	Graceful SIGTERM (e.g., Kubernetes stop)
+139	Segmentation fault
+126/127	Command not found or permission issues
+
+$$ docker inspect --format='{{.HostConfig.Memory}}' my-app
+If output is: 0
+➡️ It means no memory limit applied (dangerous for production). This command helps me verify whether the container has proper memory limits.
+If memory = 0, the container can consume all system RAM and cause node crashes.
+
+To confirm memory limits in production
+To check if autoscaling policies are correct
+To ensure developers didn't push an image with wrong resource configs
+
+$$ docker inspect --format='{{json .Mounts}}' web-app | jq
+
+This covers:
+
+Bind mounts
+Named volumes
+Anonymous volumes
+tmpfs mounts
+Read-only mounts
+
+You use this when:
+
+Debugging volume misconfigurations
+Verifying correct mount paths in CI/CD environments
+Ensuring logs are mounted to external storage
+Auditing what data is persistent vs ephemeral
+Checking file-permission issues caused by incorrect bind mounts
+
+$$ docker inspect --format='{{.NetworkSettings.IPAddress}}'
+
+gives the container’s internal network IP. It’s extremely useful when debugging microservice connectivity issues, verifying DNS resolution, or inspecting network isolation.
+For custom bridge networks, I use {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} to handle multi-network setups.”
