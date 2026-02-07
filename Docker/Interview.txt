@@ -58,4 +58,12 @@ Efficient merging of many layers.
 ✔ Stable for production
 Recommended by Docker & Kubernetes.
 
+overlay2 supports up to 128 lower layers (more than aufs).
+It uses copy-on-write, which saves space and avoids copying entire files.
+Works best when the host filesystem is XFS with ftype=1 or ext4.
+Reduces inode consumption compared to old drivers — but can still run out in high-churn deployments.
+
+docker system df   Check Docker disk usage
+df -i   Check host inode usage
+
 
