@@ -1,1 +1,61 @@
+1. Explain Docker Namespaces
+
+Docker uses Linux namespaces to provide process-level isolation. Each container gets its own namespace so it feels like a separate machine even though it shares the same kernel. Namespaces isolate what a container can see.
+
+Types of namespaces Docker uses
+| Namespace | What it isolates          | Example                                      |
+| --------- | ------------------------- | -------------------------------------------- |
+| **PID**   | Process tree              | Container sees only its own processes        |
+| **NET**   | Networking stack          | Each container gets its own veth, IP         |
+| **IPC**   | Shared memory, semaphores | Prevents shared memory clashes               |
+| **UTS**   | Hostname & domain name    | Container has its own hostname               |
+| **MNT**   | Filesystem mount points   | Containers get their own root FS             |
+| **USER**  | UID/GID mapping           | Map root inside container → non-root outside |
+
+2. What is cgroups and how does Docker use them?
+
+cgroups (control groups) are a Linux kernel feature that Docker uses to limit and manage system resources such as CPU, memory, IO, and PIDs for each container.
+
+What Docker controls with cgroups:
+CPU throttling (--cpus, --cpu-shares)
+Memory limits & OOM protection (-m, --memory-swap)
+Block IO (--blkio-weight)
+PIDs (--pids-limit)
+
+✅ 3. What is a Union Filesystem in Docker?
+
+UnionFS is a filesystem technology that allows Docker to create images in layers. Each layer is read-only, and containers get a thin writable layer on top.
+
+Why UnionFS is powerful:
+
+Avoids duplication → saves space
+Enables image layer caching
+Faster builds → unchanged layers are reused
+Basis of all Docker images
+
+✅ 4. What is the purpose of overlay2?
+
+overlay2 is Docker’s default and most efficient storage driver.
+It's an improved OverlayFS that merges multiple read-only image layers into one unified view and provides a very fast writable layer for containers. Overlay2 is Docker’s default and recommended storage driver on modern Linux kernels (4.x+). It is an implementation of OverlayFS, which merges multiple image layers into a single unified filesystem.
+
+Why overlay2 is preferred:
+
+✔ Faster image builds
+✔ Better disk usage
+✔ Less inode consumption
+✔ More stable for large layers
+✔ Works extremely well with modern kernels (4.x+)
+
+✔ Faster builds
+Uses minimal copy operations.
+
+✔ Space-efficient
+No duplication of layers.
+
+✔ Better for large images
+Efficient merging of many layers.
+
+✔ Stable for production
+Recommended by Docker & Kubernetes.
+
 
