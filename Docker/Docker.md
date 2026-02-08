@@ -396,9 +396,9 @@ High-security → distroless
 
 Alpine allowed only for Go & static binaries  
 
-
 Alpine → adduser, addgroup  
 Debian/Ubuntu → useradd, groupadd  
+
 **Some Distroless image and slim image--**
 
 Distolress Images-  
@@ -406,7 +406,6 @@ FROM gcr.io/distroless/java17-debian12
 FROM gcr.io/distroless/python3-debian12  
 FROM gcr.io/distroless/nodejs20-debian12  
 FROM gcr.io/distroless/dotnet/aspnet:8.0  
-  
   
 Slim images-  
 FROM eclipse-temurin:17-jre-jammy  
@@ -423,17 +422,22 @@ Alpine is used selectively, mainly for Go or static binaries, but avoided for Ja
   
 “The best Docker image is not the smallest one — it’s the one that fails the least in production.”
 
-| Image      | Size       | Shell | libc  | Debug      | Use Case     |
-| ---------- | ---------- | ----- | ----- | ---------- | ------------ |
+| Image      | Size       | Shell | libc  | Debug      | Use Case       |  
+| ---------- | ---------- | ----- | ----- | ---------- | ------------   |  
 | Slim       | Medium     | ✅     | glibc | Easy       | Default prod | 
 | Distroless | Small      | ❌     | glibc | Hard       | Secure prod  | 
 | Alpine     | Very Small | ✅     | musl  | Tricky     | Selective    |   
 | Scratch    | Tiny       | ❌     | None  | Impossible | Static only  |  
 
--Works with almost all precompiled binaries, glibc is the default and safest libc for most production workloads, Has shell, apt, debugging tools.   
--Uses glibc → good compatibility, No shell, no package manager, Non-root by default, Harder to debug, very low CVEs  
--Alpine uses musl libc, which is smaller but can cause runtime issues with native dependencies.    
--No OS, no libc, no shell at all, Works ONLY with statically compiled binaries    
+-Slim works with almost all precompiled binaries, glibc is the default and safest libc for most production workloads, has shell, apt, debugging tools, [Best balance: small + compatible + easy debugging.]  
+  
+-Distroless Uses glibc → good compatibility, No shell, no package manager, Non-root by default, Harder to debug, very low CVEs [Good for final production deployment]  
+  
+-Alpine uses musl libc, which is smaller but can cause runtime issues with native dependencies, [Good for Go / Rust, where apps are statically compiled & Where you need shell + small size]  
+  
+-Scratch has No OS, no libc, no shell at all, Works ONLY with statically compiled binaries, Not suitable for apps needing runtime libs, Impossible to debug.  
+
+  
 ===============================================================================================================================================  
 **Real-time challenges: ** 
 
@@ -482,6 +486,7 @@ services:
 -------------------------------------------------------------------  
 
 Docker Model Runner: 
+
 
 
 
