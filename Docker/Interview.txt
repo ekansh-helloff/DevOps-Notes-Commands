@@ -66,4 +66,53 @@ Reduces inode consumption compared to old drivers — but can still run out in h
 docker system df   Check Docker disk usage
 df -i   Check host inode usage
 
+🧪 18. What happens when Docker stops a container?
 
+Stopping follows a signal sequence:
+
+Docker sends SIGTERM to PID 1
+→ gives the app time to gracefully shut down
+→ default timeout = 10 seconds
+
+If still running, Docker forces kill using SIGKILL
+→ immediate termination
+→ no cleanup
+
+Container transitions to Stopped state
+Resources like CPU/memory/network namespace are released.
+
+Important:
+Well-written production apps catch SIGTERM and exit cleanly.
+
+🧪 19. Explain OOMKill in containers.
+Answer
+
+OOMKill = Out-of-Memory Kill
+Occurs when container exceeds its memory limit.
+
+cgroup detects memory violation
+Kernel kills the container's main process
+You see:
+
+OOMKilled = true
+ExitCode = 137
+
+Common causes:
+
+Memory leak
+Wrong JVM heap sizing
+Large Python objects
+No swap or too low memory limit
+
+🧪 21. What is the difference between SIGTERM and SIGKILL inside Docker?
+
+Signal	Meaning	Behavior
+SIGTERM (15)	"Please exit"	Graceful shutdown, allows cleanup
+SIGKILL (9)	"Die now"	Immediate kill, no cleanup, cannot be trapped
+
+Docker workflow:
+
+docker stop → sends SIGTERM
+Waits 10 sec (configurable)
+
+If still running → sends SIGKILL
