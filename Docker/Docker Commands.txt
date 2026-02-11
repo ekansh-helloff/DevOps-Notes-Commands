@@ -82,6 +82,32 @@ docker run --rm -it --network my-net busybox
 
  docker run busybox /bin/sh -c 'exit 3'
  echo $?                                                ## Any exit code other than 125, 126, and 127 represent the exit code of the provided container command.
+
+docker exec -it <container> /bin/bash
+docker exec -it <container> /bin/sh
+docker logs -f <container>
+docker run --entrypoint sh <image>
+docker events
+docker exec <container> printenv
+docker exec <container> sh -c 'echo $DB_HOST'     ##for a specific environment value
+docker cp <container>:/path/in/container /path/on/host
+docker cp /path/on/host <container>:/path/in/container
+docker stats <container>
+docker top <container>
+docker inspect <container> | jq '.HostConfig.Memory'
+docker exec <container> ss -tulpn
+docker exec -it payment-service /bin/bash
+docker exec -it payment-service sh
+docker run -it --pid=container:payment-service --net=container:payment-service busybox sh                #Debug a distroless container using busybox
+docker stop payment-service
+docker kill payment-service
+docker kill payment-service
+docker kill --signal=SIGTERM payment-service
+docker kill --signal=SIGKILL payment-service
+
+
+
+
 --------------------------------------------------------------------------------------------------------------------
 NETWORKING
 
@@ -120,6 +146,7 @@ docker compose down            # Stop and remove containers
 docker compose down -v         # Remove containers + volumes
 docker volume ls               # List all volumes
 docker volume inspect db_data  # Inspect a specific volume
+
 ======================================================================================
 docker volume create mydata
 docker run -d -v mydata:/app/data nginx
@@ -264,4 +291,7 @@ DOCKER_CONTENT_TRUST=1
 
 Encrypt secrets using Vaults.
 
-🔥🔥 
+==========================================================================================================================================================================
+
+
+
